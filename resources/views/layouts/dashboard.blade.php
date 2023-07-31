@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ app()->getLocale() }}">
 
 <head>
     <meta charset="utf-8">
@@ -31,6 +31,9 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.5/css/dataTables.bootstrap4.min.css">
     <!-- Toastr -->
     <link rel="stylesheet" href="{{ asset('plugins/toastr/toastr.min.css') }}">
+    {{-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous"> --}}
+
+
     <style>
         .collapsible-row {
             display: none;
@@ -166,7 +169,18 @@
                             alt="User Image">
                     </div>
                     <div class="info">
-                        <a href="#" class="d-block">Alexander Pierce</a>
+                        
+                        <a href="{{ route('login.perform') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                            <i class="fas fa-sign-out-alt"></i>
+                            @lang('site.logout')
+                        </a>
+                        
+                        <!-- Create a form with a POST method to trigger the logout route -->
+                        <form id="logout-form" action="{{ route('logout.perform') }}" method="POST" style="display: none;">
+                            @csrf
+                        </form>   
+                        <a href="#" class="d-block">{{auth()->user()->username}}</a>
+                       
                     </div>
                 </div>
 
@@ -252,7 +266,7 @@
                         <div class="col-sm-6">
                             <ol class="breadcrumb float-sm-right">
                                 @section('breadCrumb')
-                                    <li class="breadcrumb-item"><a href="#">@lang('site.home')</a></li>
+                                <li class="breadcrumb-item"><a href="#">@lang('site.home')</a></li>
 
                                 @show
                             </ol>
@@ -286,7 +300,18 @@
         <!-- /.control-sidebar -->
     </div>
     <!-- ./wrapper -->
-
+    <script>
+        tinymce.init({
+            selector: '.tinymce',
+            plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount checklist mediaembed casechange export formatpainter pageembed linkchecker a11ychecker tinymcespellchecker permanentpen powerpaste advtable advcode editimage tinycomments tableofcontents footnotes mergetags autocorrect typography inlinecss',
+            toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
+            tinycomments_mode: 'embedded',
+            tinycomments_author: 'Author name',
+            height: 300,
+            menubar: 'file edit view insert format tools table tc help',
+    
+        });
+    </script>
     <!-- jQuery -->
     <script src="{{ asset('plugins/jquery/jquery.min.js') }}"></script>
     <!-- jQuery UI 1.11.4 -->
@@ -320,9 +345,13 @@
     <script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.5/js/dataTables.bootstrap4.min.js"></script>
     <!-- Toastr -->
+    
     <script src="{{ asset('plugins/toastr/toastr.min.js') }}"></script>
+    <script src="https://cdn.tiny.cloud/1/{{ config('app.tiny_api_key') }}/tinymce/6/tinymce.min.js"
+        referrerpolicy="origin"></script>
 
     @stack('script')
+
 </body>
 
 </html>

@@ -158,6 +158,25 @@ return [
     |
     */
 
-    'attributes' => [],
+    'attributes' => [
+    'name' => 'Name',
+    'username' => 'Username',
+    'email' => 'Email',
+    'firstname' => 'First Name',
+    'lastname' => 'Last Name',
+    'password' => 'Password',
+    'password_confirmation' => 'Password Confirmation',
+    'city' => 'City',
+    'category_id' => 'Category',
+    'publication'=>'Publication',
+    'description'=>'Description',
+    'price'=>'Price',
+    'image'=>'Image',
+    'phone'=>'Phone',
+    'address'=>'Address',
+    'country'=>'Country',
+    'author'=>'Author',
+    'status'=>'Status',
+    ],
 
 ];

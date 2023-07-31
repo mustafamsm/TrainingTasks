@@ -8,6 +8,7 @@ use COM;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Yajra\DataTables\Contracts\DataTable;
 use Yajra\DataTables\Facades\DataTables;
 
 class CategoryController extends Controller
@@ -19,6 +20,8 @@ class CategoryController extends Controller
      */
     public function index()
     {
+        // $c=Category::has('books')->get();
+        // $c=Category::doesntHave('books')->get();
 
         return view('dashboard.categories.index');
     }
@@ -43,12 +46,12 @@ class CategoryController extends Controller
                 data-status="' . $row->status . '"
                 data-image="' . $row->image . '"
                 data-id="' . $row->id . '"
-                >Edit</button>
+                >' . __('site.edit') . '</button>
 
                 <button ajax_id="' . $row->id . '" type="button"
                 class="btn btn-danger delete_btn btn-sm"
                
-                >Delete</button> 
+                >' . __('site.delete') . '</button> 
 
                 <button   type="button"
                 data-toggle="modal" data-target="#modal-show"
@@ -56,14 +59,14 @@ class CategoryController extends Controller
                 data-name="' . $row->name . '"  
                 data-status="' . $row->status . '"
                 data-image="' . $row->image . '"
-                >Show</button>
+                >' . __('site.show') . '</button>
 
                 <button   type="button"
                 data-toggle="modal" data-target="#modal-books"
                 class="btn btn-info  btn-sm btn-book"
                 data-id="' . $row->id . '"  
                  
-                >Books</button>
+                >' . __('site.books') . '</button>
                 ';
             })
             ->rawColumns(['action', 'books'])
@@ -100,18 +103,18 @@ class CategoryController extends Controller
             'image' => $name,
             'status' => $request->status
         ]);
-        return response()->json(['success' => true, 'message' => 'Category added successfully']);
+        return response()->json(['success' => true, 'message' => __('site.added successfully')]);
     }
 
 
     public function show($id)
     {
-        
-        $category = Category::findOrFail($id);
-        $books=$category->books()->get();
-       
-        return response()->json($books);
-       
+
+        $category = Category::where('id', $id)->first();
+        $books = $category->books()->get();
+        return  DataTables::Of($books)
+            ->addIndexColumn()
+            ->toJson();
     }
 
     /**
@@ -154,7 +157,7 @@ class CategoryController extends Controller
             Storage::disk('public')->delete('category-images/' . $old_iamge);
         }
 
-        return redirect()->route('dashboard.categories.index')->with('success', 'Category Updated ');
+        return redirect()->route('dashboard.categories.index')->with('success', __('site.updated_successfully'));
     }
 
     public function ajaxUpdate(Request $request, $id)
@@ -165,10 +168,10 @@ class CategoryController extends Controller
         ]);
         $category = Category::findOrFail($id);
         $old_iamge = $category->image;
-         
+
         $data = $request->except('image');
 
-       
+
         $new_image = null;
         if ($request->hasFile('image')) {
             $file = $request->file('image');
@@ -185,20 +188,20 @@ class CategoryController extends Controller
         if ($old_iamge && $new_image) {
             Storage::disk('public')->delete('category-images/' . $old_iamge);
         }
-        return response()->json(['success' => true, 'message' => 'Category updated successfully']);
+        return response()->json(['success' => true, 'message' => __('site.updated_successfully')]);
     }
     public function destroy($id)
     {
         $category = Category::find($id);
         if ($category->books()->count() >  0) {
             return response()->json([
-                'msg' => 'لا يمكنك الحذف',
+                'msg' => __('site.cant_delete_this_category_because_it_has_books') . '!!',
                 'status' => false,
             ]);
         }
         if (!$category) {
             return response()->json([
-                'msg' => 'غير موجود !!',
+                'msg' => __('site.not_exist'),
                 'status' => false,
             ]);
         }
@@ -206,9 +209,9 @@ class CategoryController extends Controller
         if ($category->image) {
             Storage::disk('public')->delete('category-images/' . $category->image);
         }
-       
+
         return response()->json([
-            'msg' => 'تم الحذف  بنجاج !',
+            'msg' => __('site.deleted_successfully'),
             'status' => true,
             'id' => $id
         ]);
