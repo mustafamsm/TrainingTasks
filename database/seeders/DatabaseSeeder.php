@@ -18,8 +18,8 @@ class DatabaseSeeder extends Seeder
     {
         // \App\Models\User::factory(10)->create();
 
-        Category::factory(10)->create();
-        Book::factory(50)->create();
+        // Category::factory(10)->create();
+        // Book::factory(50)->create();
 
         $this->call(SettingSeeder::class);
     }

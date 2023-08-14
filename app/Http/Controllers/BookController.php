@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Image;
 use App\Models\Book;
 use App\Models\Category;
 use App\Models\TemporaryFile;
@@ -88,16 +89,8 @@ class BookController extends Controller
         $book= Book::create($request->input());
         $tempFile = TemporaryFile::where('folder', $request->image)->first();
         if ($tempFile) {
-            File::copy(storage_path('app/public/images/tmp/' . $request->image . '/' . $tempFile->filename), storage_path('app/public/book-images/'  . $tempFile->filename));
-            $book->image = $tempFile->filename;
-            $book->save();
-            Storage::deleteDirectory('public/images/tmp/'.$tempFile->folder, true);
-            // sleep 1 second because of race condition with HD
-            sleep(1);
-            // actually delete the folder itself
-            Storage::deleteDirectory('public/images/tmp'.$tempFile->folder);
-//            rmdir(storage_path('app/public/images/tmp/' . $request->image));
-            $tempFile->delete();
+            Image::Image($request,$tempFile,'book-images',$book);
+
             return response()->json(['success' => true, 'message' => __('site.added successfully')]);
        }
         return response()->json(['error' => true, 'message' => __('no image selected')]);
@@ -136,18 +129,10 @@ class BookController extends Controller
         if ($request->has('image')) {
             $tempFile = TemporaryFile::where('folder', $request->image)->first();
             if ($tempFile) {
-                File::copy(storage_path('app/public/images/tmp/' . $request->image . '/' . $tempFile->filename), storage_path('app/public/book-images/'  . $tempFile->filename));
-                $book->image = $tempFile->filename;
-                $book->save();
-                Storage::deleteDirectory('public/images/tmp/'.$tempFile->folder, true);
-                // sleep 1 second because of race condition with HD
-                sleep(1);
-                // actually delete the folder itself
-                Storage::deleteDirectory('public/images/tmp'.$tempFile->folder);
-    //            rmdir(storage_path('app/public/images/tmp/' . $request->image));
-                $tempFile->delete();
-                Storage::disk('public')->delete('book-images/' . $old_iamge);
+                Image::Image($request,$tempFile,'book-images',$book);
             }
+            Storage::disk('public')->delete('book-images/' . $old_iamge);
+
         }
         
 

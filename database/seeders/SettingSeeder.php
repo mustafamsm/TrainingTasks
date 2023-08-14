@@ -29,6 +29,9 @@ class SettingSeeder extends Seeder
 
             
         ];
-        Setting::insert($seetings);
+        foreach($seetings as $seeting){
+            Setting::create($seeting);
+        }
+        // Setting::create($seetings);
     }
 }

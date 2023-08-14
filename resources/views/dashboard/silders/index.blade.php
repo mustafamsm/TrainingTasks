@@ -61,8 +61,7 @@
     @push('script')
          
         <script>
-            axios.defaults.headers.common['X-CSRF-TOKEN'] = document.querySelector('meta[name="csrf-token"]').content;
-            $(function() {
+             $(function() {
                 var table = $('#table_id').DataTable({
                     processing: true,
                     responsive: true,
@@ -140,30 +139,24 @@
 
                 });
 
-                /// reset Add Error
-                $(document).on('click', '.btn-default', function(e) {
-                    var errorAlert = $('#error-alert');
-                    errorAlert.hide();
-                })
-                /// reset Edit Error
-                $(document).on('click', '.btn-default', function(e) {
-                    var errorAlert = $('#edit-error-alert');
-                    errorAlert.hide();
-                })
+               
 
 
                 ///Add Ajax 
                 $(document).on('click', '.btn-submit', function(e) {
 
                     e.preventDefault();
+
                     var errorAlert = $('#error-alert');
+                    errorAlert.empty();
+                    errorAlert.hide();
+
                     var form = $('#form')[0];
                     var formData = new FormData(form);
 
-                    var fileInput = $('#file')[0];
-                    var file = fileInput.files[0];
-                    if (file) {
-                        formData.append('image', file);
+                 //append the image to the form data to send it to the server using the uniq id from filepond
+                 if (pond_id != 0) {
+                        formData.append('image', pond_id);
                     }
                     $.ajax({
                         type: 'post',
@@ -175,7 +168,7 @@
                             toastr.success(response.message);
                             $('#form').trigger('reset');
                             $('#table_id').DataTable().draw(false);
-                            $('.image-preview').attr('src', '');
+                           
                         },
                         error: function(xhr, textStatus, errorThrown) {
                             var errors = xhr.responseJSON.errors;
@@ -203,7 +196,8 @@
                     if ($('.modal-add-render').length == 0) {
                         axios.get(`/{{ $curan }}/dashboard/silders/create`)
                             .then(res => {
-                                $('body').append(res.data.modalContent);
+                                $('#modal-box').empty();
+                                $('#modal-box').append(res.data.modalContent);
                                 // Show the Bootstrap modal
                                 $('.modal-add-render').modal('show');
                                 this.disabled = false;
@@ -215,9 +209,7 @@
                     }
                 })
 
-                $(document).on('hidden.bs.modal', '.modal-add-render', function() {
-                    $(this).remove();
-                });
+              
 
                 $(document).on('click', '.editModalBTn', function(e) {
                     this.disabled = true;
@@ -226,6 +218,7 @@
                     if ($('.modal-edit-render').length == 0) {
                         axios.get(`/{{ $curan }}/dashboard/silders/${id}/edit`)
                             .then(res => {
+                                $('#modal-box').empty();
                                 $('#modal-box').append(res.data.modalContent);
                                 $('.modal-edit-render').modal('show');
                                 this.disabled = false;
@@ -237,9 +230,7 @@
                     }
                 });
 
-                $(document).on('hidden.bs.modal', '.modal-edit-render', function() {
-                    $(this).remove();
-                });
+        
 
 
 
@@ -249,7 +240,8 @@
                     if ($('.show-modal-render').length == 0) {
                         axios.get(`/{{ $curan }}/dashboard/silders/${id}`)
                             .then(res => {
-                                $('body').append(res.data.modalContent);
+                                $('#modal-box').empty();
+                                $('#modal-box').append(res.data.modalContent);
                                 $('.show-modal-render').modal('show');
                             }).catch(error => {
                                 toastr.error(error.response.data.message);
@@ -258,24 +250,21 @@
                         $('.show-modal-render').modal('show');
                     }
                 });
-                $(document).on('hidden.bs.modal', '.show-modal-render', function() {
-                    $(this).remove();
-                });
+             
 
                 $(document).on('click', '#btn-update', function(e) {
 
                     e.preventDefault();
                     var errorAlert = $('#edit-error-alert');
-                    var editBookForm = $('#Edit-form');
+                    
 
                     id = $('#id').val();
                     var form = $('#Edit-form')[0];
                     var formData = new FormData(form);
 
-                    var fileInput = $('#file')[0];
-                    var file = fileInput.files[0];
-                    if (file) {
-                        formData.append('image', file);
+                
+                    if (pond_id != 0) {
+                        formData.append('image', pond_id);
                     }
                     var errorAlert = $('#edit-error-alert');
                     $.ajax({
@@ -314,14 +303,7 @@
 
 
                 });
-                $('.modal-edit-render').on('hidden.bs.modal', function(e) {
-
-                    $('.modal-edit-render').remove();
-                });
-                $('.modal-add-render').on('hidden.bs.modal', function(e) {
-
-                    $('.modal-add-render').remove();
-                });
+               
 
             })(jQuery);
         </script>

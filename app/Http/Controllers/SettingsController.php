@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Setting;
+ 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\View;
+use Yajra\DataTables\Facades\DataTables;
 
 class SettingsController extends Controller
 {
@@ -13,7 +17,41 @@ class SettingsController extends Controller
      */
     public function index()
     {
+      
+        // return Setting::all()->pluck('value','key')->toArray();
+        return view('dashboard.settings.index');
         
+    }
+    public function getAll(){
+
+        $group=Setting::all();
+    
+        return DataTables::of($group)
+        ->addIndexColumn()
+        ->addColumn('action', function ($row) {
+            return $btn = '
+
+                <button  type="button"
+                class="btn btn-info  btn-sm editModalBTn"
+
+                data-id="' . $row->id . '"
+                ><i class="fa fa-pencil" aria-hidden="true"></i>  '  . __('site.edit') . '</button>
+
+                <button ajax_id="' . $row->id . '" type="button"
+                class="btn btn-danger delete_btn btn-sm"
+
+                >' . __('site.delete') . '</button>
+                <button   type="button"
+
+                class="btn btn-success showBtn btn-sm"
+                data-id="' . $row->id . '"
+
+                >' . __('site.show') . '</button>
+
+
+                ';
+        })->rawColumns(['action'])
+        ->toJson();
     }
 
     /**
@@ -23,7 +61,10 @@ class SettingsController extends Controller
      */
     public function create()
     {
-        //
+        $groups=Setting::select('group')->distinct()->get();
+        
+        $modalContent = View::make('dashboard.settings.AddModal',['groups'=>$groups])->render();
+        return response()->json(['modalContent' => $modalContent]);
     }
 
     /**
@@ -34,7 +75,13 @@ class SettingsController extends Controller
      */
     public function store(Request $request)
     {
-        //
+       $request->validate([
+              
+              'key'=>'required|string|max:255',
+              'value'=>'required|string|max:255',
+              'group'=>'required|string|max:255|exists:settings,group',
+         ]);
+      
     }
 
     /**

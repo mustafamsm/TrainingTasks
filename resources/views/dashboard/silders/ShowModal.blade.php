@@ -22,7 +22,7 @@
                     <label>@lang('site.status') </label>
                     <p >{{$silder->status}}</p>
                     <label>@lang('site.image') </label>
-                    <img src="{{asset('storage/'.$silder->image)}}" width="100px" height="100px" alt="{{$silder->image}}"><br>
+                    <img src="{{asset('storage/silder-images/'.$silder->image)}}" width="100px" height="100px" alt="{{$silder->image}}"><br>
                     <label>@lang('site.description_ar') </label>
                     <p >{!! $silder->description_ar !!}</p>
                     <label>@lang('site.description_en') </label>

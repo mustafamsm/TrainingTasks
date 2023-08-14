@@ -4,6 +4,7 @@ use App\Http\Controllers\BookController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\frontController;
+use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\SilderController;
 use App\Models\Book;
 use App\View\Components\Front;
@@ -73,6 +74,9 @@ Route::group([
             Route::resource('/silders', SilderController::class);
             Route::get('/SildergetAll', [SilderController::class, 'getAll'])->name('silders.getAll');
             Route::post('/ajaxupdate/{id}', [SilderController::class, 'ajaxUpdate'])->name('silders.ajaxUpdate');
+
+            Route::resource('/settings',SettingsController::class);
+            Route::get('/SettingsgetAll', [SettingsController::class, 'getAll'])->name('settings.getAll');
         }
     );
 });

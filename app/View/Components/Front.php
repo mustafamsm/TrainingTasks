@@ -7,10 +7,11 @@ use Illuminate\View\Component;
 class Front extends Component
 {
     public $title;
- 
+  
     public function __construct($title)
     {
         $this->title = $title;
+        
 
     }
 

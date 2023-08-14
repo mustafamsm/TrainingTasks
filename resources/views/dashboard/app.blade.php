@@ -41,7 +41,7 @@
   <div class="carousel-inner">
     @foreach ($silders as $silder)
     <div class="carousel-item {{ $loop->first ? ' active' : '' }}">
-      <img class="d-block w-100   "   src="{{asset('storage/'.$silder->image)}}" alt="First slide"  width="300" height="300"  >
+      <img class="d-block w-100   "   src="{{asset('storage/silder-images/'.$silder->image)}}" alt="First slide" height="550" width="550"   style="object-fit: contain;position: relative;" >
 
       <div class="carousel-caption d-none d-md-block">
         <h5>{{$silder->title}}</h5>

@@ -58,10 +58,9 @@
 
                         <div class="form-group">
                             <label for="image">@lang('site.image')</label>
-                            <input type="file" class="form-control image " id="file" name="image"
-                            accept="png,jpeg,jpg">
-                            <img src=" " class="img-thumbnail image-preview" alt="" width="120px"
-                                    height="120px" id="image"><br><br>
+                            <input type="file" id="file" name="image"
+                            >
+                             
                         </div>
                     </div>
             </div>

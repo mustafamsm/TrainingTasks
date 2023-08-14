@@ -17,8 +17,8 @@
 		</div>
 	</div>
 </section>
-
-<section id="featured-books">
+{{config('settings.general.site_name')}}
+{{-- <section id="featured-books">
 	<div class="container">
 		<div class="row">
 			<div class="col-md-12">
@@ -737,6 +737,6 @@
 			</div>	
 		</div>
 	</div>
-</section>
+</section> --}}
 
 </x-front>

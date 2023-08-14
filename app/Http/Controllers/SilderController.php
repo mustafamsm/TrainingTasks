@@ -2,13 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Image;
 use App\Models\Silder;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\View;
-use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Str;
+use Illuminate\Http\Request;
+use App\Models\TemporaryFile;
+use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\Storage;
+use Yajra\DataTables\Facades\DataTables;
+
 class SilderController extends Controller
 {
 
@@ -58,7 +61,7 @@ public function getAll(){
         $request->validate([
             'title_ar' => 'required|string|max:255',
             'title_en' => 'required|string|max:255',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'image' => 'required|exists:temporary_files,folder',
             'status' => 'required|in:0,1|max:255',
             'description_ar' => 'required|string|max:255',
             'description_en' => 'required|string|max:255',
@@ -66,26 +69,32 @@ public function getAll(){
             'end_date' => 'required|date',
 
         ]);
-        if ($request->hasFile('image')) {
-            $file = $request->file('image');
-            $name = Str::random(20) . '.' . $file->getClientOriginalExtension();
-
-            $path = $file->storeAs('silder-images', $name, [
-                'disk' => 'public'
-            ]);
-        }
-
 
         $silder = Silder::create([
             'title_ar' => $request->title_ar,
             'title_en' => $request->title_en,
-            'image' => $path,
             'status' => $request->status,
             'description_ar' => $request->description_ar,
             'description_en' => $request->description_en,
             'start_date' => $request->start_date,
             'end_date' => $request->end_date,
+            'image' => '',
         ]);
+        $tempFile = TemporaryFile::where('folder', $request->image)->first();
+        if($tempFile){
+            Image::Image($request, $tempFile, 'silder-images', $silder);
+        }
+        // if ($request->hasFile('image')) {
+        //     $file = $request->file('image');
+        //     $name = Str::random(20) . '.' . $file->getClientOriginalExtension();
+
+        //     $path = $file->storeAs('silder-images', $name, [
+        //         'disk' => 'public'
+        //     ]);
+        // }
+
+
+        
         return response()->json(['success' => true, 'message' => __('site.added successfully')]);
     }
 
