@@ -64,5 +64,14 @@ return [
     'title'=>'Title',
     'start_date'=>'Start Date',
     'end_date'=>'End Date',
+    'silder'=>'Silder',
+    'silders'=>'Silders',
+    'name_ar'=>'Name Ar',
+    'name_en'=>'Name En',
+    'description_ar'=>'Description Ar',
+    'description_en'=>'Description En',
+    'title_ar'=>'Title Ar',
+    'title_en'=>'Title En',
     
+
 ];

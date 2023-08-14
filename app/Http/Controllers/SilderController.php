@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Silder;
- 
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\View;
@@ -23,25 +23,25 @@ public function getAll(){
         ->addIndexColumn()
         ->addColumn('action', function ($row) {
             return $btn = '
-          
+
                 <button  type="button"
-                class="btn btn-info  btn-sm editModalBTn "
-              
+                class="btn btn-info  btn-sm editModalBTn"
+
                 data-id="' . $row->id . '"
                 ><i class="fa fa-pencil" aria-hidden="true"></i>  '  . __('site.edit') . '</button>
 
                 <button ajax_id="' . $row->id . '" type="button"
                 class="btn btn-danger delete_btn btn-sm"
-               
-                >' . __('site.delete') . '</button> 
+
+                >' . __('site.delete') . '</button>
                 <button   type="button"
-                
+
                 class="btn btn-success showBtn btn-sm"
-                data-id="' . $row->id . '" 
-            
+                data-id="' . $row->id . '"
+
                 >' . __('site.show') . '</button>
 
-               
+
                 ';
         })->rawColumns(['action'])
         ->toJson();
@@ -52,17 +52,19 @@ public function getAll(){
         return response()->json(['modalContent' => $modalContent]);
     }
 
-    
+
     public function store(Request $request)
     {
         $request->validate([
-            'title' => 'required|string|max:255',
+            'title_ar' => 'required|string|max:255',
+            'title_en' => 'required|string|max:255',
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'status' => 'required|in:0,1|max:255',
-            'description' => 'required|string|max:255',
+            'description_ar' => 'required|string|max:255',
+            'description_en' => 'required|string|max:255',
             'start_date' => 'required|date',
             'end_date' => 'required|date',
-        
+
         ]);
         if ($request->hasFile('image')) {
             $file = $request->file('image');
@@ -73,19 +75,21 @@ public function getAll(){
             ]);
         }
 
-       
+
         $silder = Silder::create([
-            'title' => $request->title,
+            'title_ar' => $request->title_ar,
+            'title_en' => $request->title_en,
             'image' => $path,
             'status' => $request->status,
-            'description' => $request->description,
+            'description_ar' => $request->description_ar,
+            'description_en' => $request->description_en,
             'start_date' => $request->start_date,
             'end_date' => $request->end_date,
         ]);
         return response()->json(['success' => true, 'message' => __('site.added successfully')]);
     }
 
-    
+
     public function show($id)
     {
         $silder = Silder::findOrFail($id);
@@ -97,7 +101,7 @@ public function getAll(){
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function edit($id)
     {
@@ -106,19 +110,21 @@ public function getAll(){
         return response()->json(['modalContent' => $modalContent]);
     }
 
-     
+
     public function update(Request $request, $id)
     {
- 
-       
+
+
         $request->validate([
-            'title' => 'required|string|max:255',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'title_ar' => 'required|string|max:255',
+            'title_en' => 'required|string|max:255',
+            'image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'status' => 'required|in:0,1|max:255',
-            'description' => 'required|string|max:255',
+            'description_ar' => 'required|string|max:255',
+            'description_en' => 'required|string|max:255',
             'start_date' => 'required|date',
             'end_date' => 'required|date',
-        
+
         ]);
         $silder = Silder::findOrFail($id);
         $old_image = $silder->image;
@@ -132,24 +138,28 @@ public function getAll(){
                 'disk' => 'public'
             ]);
         }
-         
+
         $silder->update($data);
         if ($old_image && $new_image) {
-            Storage::disk('public')->delete('category-images/' . $old_image);
+            Storage::disk('public')->delete( $old_image);
         }
 
         return response()->json(['success' => true, 'message' => __('site.updated successfully')]);
     }
     public function ajaxUpdate(Request $request,$id){
-    
+
+
+
         $request->validate([
-            'title' => 'required|string|max:255',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'title_ar' => 'required|string|max:255',
+            'title_en' => 'required|string|max:255',
+            'image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'status' => 'required|in:0,1|max:255',
-            'description' => 'required|string|max:255',
+            'description_ar' => 'required|string|max:255',
+            'description_en' => 'required|string|max:255',
             'start_date' => 'required|date',
             'end_date' => 'required|date',
-        
+
         ]);
         $silder = Silder::findOrFail($id);
         $old_image = $silder->image;
@@ -163,10 +173,10 @@ public function getAll(){
                 'disk' => 'public'
             ]);
         }
-         
+
         $silder->update($data);
         if ($old_image && $new_image) {
-            Storage::disk('public')->delete('category-images/' . $old_image);
+            Storage::disk('public')->delete($old_image);
         }
 
         return response()->json(['success' => true, 'message' => __('site.updated successfully')]);
@@ -180,6 +190,24 @@ public function getAll(){
      */
     public function destroy($id)
     {
-        //
+
+        $silder = Silder::find($id);
+
+        if (!$silder) {
+            return response()->json([
+                'msg' => __('site.not_exist'),
+                'status' => false,
+            ]);
+        }
+        $silder->delete();
+        if ($silder->image) {
+            Storage::disk('public')->delete($silder->image);
+        }
+
+        return response()->json([
+            'msg' => __('site.deleted_successfully'),
+            'status' => true,
+            'id' => $id
+        ]);
     }
 }

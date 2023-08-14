@@ -1,5 +1,7 @@
 @extends('layouts.dashboard')
-
+@php
+    $curan = LaravelLocalization::getCurrentLocale();
+@endphp
 @section('breadCrumb')
     @parent
     <li class="breadcrumb-item "><a href="{{ route('dashboard.index') }}">@lang('site.dashboard')</a></li>
@@ -48,24 +50,16 @@
                 </div>
             </div>
         </div>
-        <div class="modal">
+        <div id="modal-box">
 
         </div>
     </div>
 
 
 
-    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.0/dist/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"
-        integrity="sha512-uMtXmF28A2Ab/JJO2t/vYhlaa/3ahUOgj1Zf27M5rOo8/+fcTUVH0/E0ll68njmjrLqOBjXM3V9NiPFL5ywWPQ=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"
-        integrity="sha512-uMtXmF28A2Ab/JJO2t/vYhlaa/3ahUOgj1Zf27M5rOo8/+fcTUVH0/E0ll68njmjrLqOBjXM3V9NiPFL5ywWPQ=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
     @push('script')
-        <!-- JavaScript code to handle AJAX and render the modal -->
+         
         <script>
             axios.defaults.headers.common['X-CSRF-TOKEN'] = document.querySelector('meta[name="csrf-token"]').content;
             $(function() {
@@ -79,8 +73,8 @@
                             name: 'id'
                         },
                         {
-                            data: 'title',
-                            name: 'title'
+                            data: 'title_' + '{{ $curan }}',
+                            name: 'title_' + '{{ $curan }}'
                         },
 
                         {
@@ -100,10 +94,6 @@
             });
 
             (function($) {
-
-                @php
-                    $curan = LaravelLocalization::getCurrentLocale();
-                @endphp
 
                 ///Delete
                 $(document).on('click', '.delete_btn', function(e) {
@@ -127,7 +117,7 @@
                                     .then(res => {
 
                                         if (res.data.status === true) {
-                                            $(`.Row${id}`).remove();
+                                            $('#table_id').DataTable().draw(false);
                                             swal({
                                                 title: res.data.msg,
                                                 icon: "success",
@@ -230,13 +220,15 @@
                 });
 
                 $(document).on('click', '.editModalBTn', function(e) {
+                    this.disabled = true;
                     e.preventDefault();
                     var id = $(this).data('id');
                     if ($('.modal-edit-render').length == 0) {
                         axios.get(`/{{ $curan }}/dashboard/silders/${id}/edit`)
                             .then(res => {
-                                $('body').append(res.data.modalContent);
+                                $('#modal-box').append(res.data.modalContent);
                                 $('.modal-edit-render').modal('show');
+                                this.disabled = false;
                             }).catch(error => {
                                 toastr.error(error.response.data.message);
                             })
@@ -270,10 +262,68 @@
                     $(this).remove();
                 });
 
+                $(document).on('click', '#btn-update', function(e) {
 
+                    e.preventDefault();
+                    var errorAlert = $('#edit-error-alert');
+                    var editBookForm = $('#Edit-form');
+
+                    id = $('#id').val();
+                    var form = $('#Edit-form')[0];
+                    var formData = new FormData(form);
+
+                    var fileInput = $('#file')[0];
+                    var file = fileInput.files[0];
+                    if (file) {
+                        formData.append('image', file);
+                    }
+                    var errorAlert = $('#edit-error-alert');
+                    $.ajax({
+                        type: 'post',
+                        url: `/{{ $curan }}/dashboard/ajaxupdate/${id}`,
+                        processData: false,
+                        contentType: false,
+                        data: formData,
+                        success: function(response) {
+                            toastr.success(response.message);
+                            $('#table_id').DataTable().draw(false);
+
+                            $('#modal-box').empty();
+                            // $('.modal-edit-render').modal('hide');
+                            $('.modal-backdrop').remove();
+                        },
+                        error: function(xhr, textStatus, errorThrown) {
+                            var errors = xhr.responseJSON.errors;
+                            if (errors) {
+                                var errorMessages = '';
+                                $.each(errors, function(field, messages) {
+                                    $.each(messages, function(index, message) {
+                                        errorMessages += '<li>' + message + '</li>';
+                                    });
+                                });
+                                errorAlert.html('<ul>' + errorMessages + '</ul>');
+                                errorAlert.show();
+                            } else {
+                                alert('An error occurred');
+                            }
+                        }
+
+                    });
+
+
+
+
+                });
+                $('.modal-edit-render').on('hidden.bs.modal', function(e) {
+
+                    $('.modal-edit-render').remove();
+                });
+                $('.modal-add-render').on('hidden.bs.modal', function(e) {
+
+                    $('.modal-add-render').remove();
+                });
 
             })(jQuery);
         </script>
-      
     @endpush
 @endsection

@@ -3,7 +3,7 @@
     <div class="modal-dialog " role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title">@lang('site.add') @lang('site.Silder')</h4>
+                <h4 class="modal-title">@lang('site.add') @lang('site.silder')</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -15,8 +15,14 @@
                     <input type="hidden" name="_token" value="{{ csrf_token() }}">
                     <div class="card-body">
                         <div class="form-group">
-                            <label for="name">@lang('site.title')</label>
-                            <input type="text" class="form-control " placeholder="{{__('site.title')}}" name="title"
+                            <label for="name">@lang('site.title_ar')</label>
+                            <input type="text" class="form-control " placeholder="{{__('site.title_ar')}}" name="title_ar"
+                                id="title">
+
+                        </div>
+                        <div class="form-group">
+                            <label for="name">@lang('site.title_en')</label>
+                            <input type="text" class="form-control " placeholder="{{__('site.title_en')}}" name="title_en"
                                 id="title">
 
                         </div>
@@ -33,8 +39,13 @@
 
                         </div>
                         <div class="form-group">
-                            <label for="description">@lang('site.description')</label>
-                            <textarea name="description" class="form-control"> </textarea>
+                            <label for="description">@lang('site.description_ar')</label>
+                            <textarea name="description_ar" class="form-control"> </textarea>
+
+                        </div>
+                        <div class="form-group">
+                            <label for="description">@lang('site.description_en')</label>
+                            <textarea name="description_en" class="form-control"> </textarea>
 
                         </div>
                         <div class="form-group">
@@ -68,19 +79,3 @@
 
 
  
-<script>
-$(".image").change(function() {
-
-    if (this.files && this.files[0]) {
-        var reader = new FileReader();
-
-        reader.onload = function(e) {
-            $('.image-preview').attr('src', e.target.result);
-        }
-
-        reader.readAsDataURL(this.files[0]);
-    }
-
-});
-
-</script>

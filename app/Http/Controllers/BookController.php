@@ -4,17 +4,22 @@ namespace App\Http\Controllers;
 
 use App\Models\Book;
 use App\Models\Category;
+use App\Models\TemporaryFile;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\View;
+use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 use Yajra\DataTables\Facades\DataTables;
-
+use Illuminate\Support\Str;
 class BookController extends Controller
 {
 
+
     public function index()
     {
-  
+
 
         $categories = Category::all();
 
@@ -28,25 +33,25 @@ class BookController extends Controller
         return DataTables::eloquent($model)
             ->addIndexColumn()
             ->addColumn('category', function (Book $book) {
-                return $book->category->name;
+                return $book->category->name_ar . ' | ' . $book->category->name_en;
             })->addColumn('action', function ($row) {
 
                 return $btn = '
                     <button  type="button"
                     class="btn btn-info  btn-sm editModalBTn "
-                  
+
                     data-id="' . $row->id . '"
                     ><i class="fa fa-pencil" aria-hidden="true"></i>  '  . __('site.edit') . '</button>
-    
+
                     <button ajax_id="' . $row->id . '" type="button"
                     class="btn btn-danger delete_btn btn-sm"
-                   
-                    >' . __('site.delete') . '</button> 
+
+                    >' . __('site.delete') . '</button>
                     <button   type="button"
-                    
+
                     class="btn btn-success showBtn btn-sm"
-                    data-id="' . $row->id . '" 
-                
+                    data-id="' . $row->id . '"
+
                     >' . __('site.show') . '</button>
                     ';
             })
@@ -68,17 +73,35 @@ class BookController extends Controller
     {
 
         $request->validate([
-            'name' => 'required|min:3|max:155',
+            'name_ar' => 'required|min:3|max:155',
+            'name_en' => 'required|min:3|max:155',
             'author' => 'required|string',
             'publication' => 'required|date',
-            'description' => 'nullable|string',
+            'description_ar' => 'nullable|string',
+            'description_en' => 'nullable|string',
             'price' => 'required|numeric',
-            'category_id' => 'required|exists:categories,id'
+            'category_id' => 'required|exists:categories,id',
+            'image' => 'required|exists:temporary_files,folder',
 
         ]);
+       
+        $book= Book::create($request->input());
+        $tempFile = TemporaryFile::where('folder', $request->image)->first();
+        if ($tempFile) {
+            File::copy(storage_path('app/public/images/tmp/' . $request->image . '/' . $tempFile->filename), storage_path('app/public/book-images/'  . $tempFile->filename));
+            $book->image = $tempFile->filename;
+            $book->save();
+            Storage::deleteDirectory('public/images/tmp/'.$tempFile->folder, true);
+            // sleep 1 second because of race condition with HD
+            sleep(1);
+            // actually delete the folder itself
+            Storage::deleteDirectory('public/images/tmp'.$tempFile->folder);
+//            rmdir(storage_path('app/public/images/tmp/' . $request->image));
+            $tempFile->delete();
+            return response()->json(['success' => true, 'message' => __('site.added successfully')]);
+       }
+        return response()->json(['error' => true, 'message' => __('no image selected')]);
 
-        Book::create($request->input());
-        return response()->json(['success' => true, 'message' => __('site.added successfully')]);
     }
 
 
@@ -86,7 +109,7 @@ class BookController extends Controller
     public function show($id)
     {
         $book = Book::where('id',$id)->with('category')->first();
-       
+
         $modalContent = View::make('dashboard.books.ShowModal', compact('book'))->render();
         return response()->json(['modalContent' => $modalContent]);
     }
@@ -96,16 +119,40 @@ class BookController extends Controller
 
 
         $request->validate([
-            'name' => 'required|min:3|max:155',
+            'name_ar' => 'required|min:3|max:155',
+            'name_en' => 'required|min:3|max:155',
             'author' => 'required|string',
             'publication' => 'required|date',
-            'description' => 'nullable|string',
-            'price' => 'required|numeric', 
+            'description_ar' => 'nullable|string',
+            'description_en' => 'nullable|string',
+            'price' => 'required|numeric',
             'category_id' => 'required|exists:categories,id'
 
         ]);
         $book = Book::findOrFail($id);
-        $book->update($request->input());
+        $old_iamge = $book->image;
+        $data = $request->except('image');
+
+        if ($request->has('image')) {
+            $tempFile = TemporaryFile::where('folder', $request->image)->first();
+            if ($tempFile) {
+                File::copy(storage_path('app/public/images/tmp/' . $request->image . '/' . $tempFile->filename), storage_path('app/public/book-images/'  . $tempFile->filename));
+                $book->image = $tempFile->filename;
+                $book->save();
+                Storage::deleteDirectory('public/images/tmp/'.$tempFile->folder, true);
+                // sleep 1 second because of race condition with HD
+                sleep(1);
+                // actually delete the folder itself
+                Storage::deleteDirectory('public/images/tmp'.$tempFile->folder);
+    //            rmdir(storage_path('app/public/images/tmp/' . $request->image));
+                $tempFile->delete();
+                Storage::disk('public')->delete('book-images/' . $old_iamge);
+            }
+        }
+        
+
+        $book->update($data);
+       
         return response()->json(['success' => true, 'message' => __('site.updated_successfully')]);
     }
 
@@ -139,32 +186,43 @@ class BookController extends Controller
     public function getTrachedDatatable()
     {
 
+        $curan = LaravelLocalization::getCurrentLocale();
+
         $model = Book::with('category')->onlyTrashed();
         return DataTables::eloquent($model)
             ->addIndexColumn()
             ->addColumn('category', function (Book $book) {
                 return $book->category->name;
             })->addColumn('action', function ($row) {
+
+
                 return $btn = '
-               
+
 
                 <button ajax_id="' . $row->id . '" type="button"
                 class="btn btn-danger delete_btn btn-sm"
-                ><i class="fa fa-trash"></i>' . __('site.force-delete') . '</button> 
+                ><i class="fa fa-trash"></i>' . __('site.force-delete') . '</button>
 
 
                 <button ajax_id="' . $row->id . '" type="button"
                 class="btn btn-primary restore_btn btn-sm"
                 >
                 <i class="fas fa-redo"></i>
-                
-                ' . __('site.restore') . '</button> 
-                
+
+                ' . __('site.restore') . '</button>
+
                 <button   type="button"
                 data-toggle="modal" data-target="#modal-show"
                 class="btn btn-success  btn-sm"
-                data-author="' . $row->author . '" data-description="' . $row->description . '"
-                data-name="' . $row->name . '" data-category_id="' . $row->category->name . '"
+                data-author="' . $row->author . '"
+                 data-description_ar="' . $row->description_ar . '"
+                 data-description_en="' . $row->description_en . '"
+                data-name_ar="' . $row->name_ar  .'"
+                data-name_en="' . $row->name_en  .'"
+                data-category_id="' .
+                $row->category->name.
+
+                  '"
                 data-price="' . $row->price . '" data-publication="' . $row->publication . '"
                 >
                 <i class="fas fa-eye"></i>
@@ -183,7 +241,7 @@ class BookController extends Controller
         $book = Book::where('id', $id)->withTrashed();
         if (!$book) {
             return response()->json([
-                'msg' => __('site.not_exist'), 
+                'msg' => __('site.not_exist'),
                 'status' => false,
             ]);
         }
@@ -200,7 +258,7 @@ class BookController extends Controller
         $book = Book::where('id', $id)->withTrashed();
         if (!$book) {
             return response()->json([
-                'msg' =>__('site.not_exist') ,  
+                'msg' =>__('site.not_exist') ,
                 'status' => false,
             ]);
         }

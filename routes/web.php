@@ -18,7 +18,8 @@ use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
+Route::post('/upload',[\App\Http\Controllers\UploadController::class,'upload'])->name('upload');
+Route::delete('/upload',[\App\Http\Controllers\UploadController::class,'delete'])->name('delete');
 
 Route::group(['namespace' => 'App\Http\Controllers\Auth', 'prefix' => LaravelLocalization::setLocale(),  'middleware' => ['localeSessionRedirect', 'localizationRedirect', 'localeViewPath']], function () {
 
@@ -64,8 +65,7 @@ Route::group([
 
             Route::resource('/silders', SilderController::class);
             Route::get('/SildergetAll', [SilderController::class, 'getAll'])->name('silders.getAll');
-            Route::post('/silder/ajaxupdate/{id}', [SilderController::class, 'ajaxUpdate'])->name('silders.ajaxUpdate');
-
+            Route::post('/ajaxupdate/{id}', [SilderController::class, 'ajaxUpdate'])->name('silders.ajaxUpdate');
         }
     );
 });

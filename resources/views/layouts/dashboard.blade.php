@@ -31,9 +31,8 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.5/css/dataTables.bootstrap4.min.css">
     <!-- Toastr -->
     <link rel="stylesheet" href="{{ asset('plugins/toastr/toastr.min.css') }}">
-    {{-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous"> --}}
 
-
+    <link href="https://unpkg.com/filepond@^4/dist/filepond.css" rel="stylesheet" />
     <style>
         .collapsible-row {
             display: none;
@@ -169,18 +168,20 @@
                             alt="User Image">
                     </div>
                     <div class="info">
-                        
-                        <a href="{{ route('login.perform') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+
+                        <a href="{{ route('login.perform') }}"
+                            onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                             <i class="fas fa-sign-out-alt"></i>
                             @lang('site.logout')
                         </a>
-                        
+
                         <!-- Create a form with a POST method to trigger the logout route -->
-                        <form id="logout-form" action="{{ route('logout.perform') }}" method="POST" style="display: none;">
+                        <form id="logout-form" action="{{ route('logout.perform') }}" method="POST"
+                            style="display: none;">
                             @csrf
-                        </form>   
-                        <a href="#" class="d-block">{{auth()->user()->username}}</a>
-                       
+                        </form>
+                        <a href="#" class="d-block">{{ auth()->user()->username }}</a>
+
                     </div>
                 </div>
 
@@ -246,7 +247,36 @@
                                 </li>
                             </ul>
                         </li>
+                        <li class="nav-item ">
+                            <a href="#" class="nav-link ">
+                                <i class="nav-icon fas fa-tachometer-alt"></i>
+                                <p>
+                                    @lang('site.silders')
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="{{ route('dashboard.silders.index') }}" @class([
+                                        'nav-link ',
+                                        'active' => Route::currentRouteName() === 'dashboard.silders.index',
+                                    ])>
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>@lang('site.silders')</p>
+                                    </a>
+                                </li>
 
+                                {{-- <li class="nav-item">
+                                    <a href="{{ route('dashboard.silders.trached') }}" @class([
+                                        'nav-link ',
+                                        'active' => Route::currentRouteName() === 'dashboard.silders.trached',
+                                    ])>
+                                        <i class="fa fa-trash nav-icon"></i>
+                                        <p>@lang('site.trash')</p>
+                                    </a>
+                                </li> --}}
+                            </ul>
+                        </li>
                     </ul>
                 </nav>
                 <!-- /.sidebar-menu -->
@@ -266,7 +296,7 @@
                         <div class="col-sm-6">
                             <ol class="breadcrumb float-sm-right">
                                 @section('breadCrumb')
-                                <li class="breadcrumb-item"><a href="#">@lang('site.home')</a></li>
+                                    <li class="breadcrumb-item"><a href="#">@lang('site.home')</a></li>
 
                                 @show
                             </ol>
@@ -300,18 +330,12 @@
         <!-- /.control-sidebar -->
     </div>
     <!-- ./wrapper -->
-    <script>
-        tinymce.init({
-            selector: '.tinymce',
-            plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount checklist mediaembed casechange export formatpainter pageembed linkchecker a11ychecker tinymcespellchecker permanentpen powerpaste advtable advcode editimage tinycomments tableofcontents footnotes mergetags autocorrect typography inlinecss',
-            toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
-            tinycomments_mode: 'embedded',
-            tinycomments_author: 'Author name',
-            height: 300,
-            menubar: 'file edit view insert format tools table tc help',
-    
-        });
-    </script>
+
+
+
+
+
+
     <!-- jQuery -->
     <script src="{{ asset('plugins/jquery/jquery.min.js') }}"></script>
     <!-- jQuery UI 1.11.4 -->
@@ -345,11 +369,81 @@
     <script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.5/js/dataTables.bootstrap4.min.js"></script>
     <!-- Toastr -->
-    
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script src="{{ asset('plugins/toastr/toastr.min.js') }}"></script>
     <script src="https://cdn.tiny.cloud/1/{{ config('app.tiny_api_key') }}/tinymce/6/tinymce.min.js"
         referrerpolicy="origin"></script>
 
+    <script src="https://unpkg.com/filepond-plugin-file-validate-type/dist/filepond-plugin-file-validate-type.js"></script>
+    <script src="https://unpkg.com/filepond@^4/dist/filepond.js"></script>
+    <script>
+        axios.defaults.headers.common['X-CSRF-TOKEN'] = document.querySelector('meta[name="csrf-token"]').content;
+
+        $(".image").change(function() {
+
+            if (this.files && this.files[0]) {
+                var reader = new FileReader();
+
+                reader.onload = function(e) {
+                    $('.image-preview').attr('src', e.target.result);
+                }
+
+                reader.readAsDataURL(this.files[0]);
+            }
+
+        });
+    </script>
+    <script>
+         let pond_id = 0;
+        $(document).on('show.bs.modal', '.modal', function(e) {
+            console.log('modal is shown');
+
+            // Get a reference to the file input element
+            const inputElement = document.querySelector('input[type="file"]');
+
+            // Register the plugin for validation type check
+            FilePond.registerPlugin(FilePondPluginFileValidateType);
+
+
+            //initialize filepond to create image
+            const pond = FilePond.create(inputElement, {
+                labelIdle: `Drag & Drop your picture or <span class="filepond--label-action">Browse</span>`,
+
+                acceptedFileTypes: ['image/*'], //only image can be uploaded
+
+            });
+            //to send the uniq id for the server to upload the image
+
+            //send image to server
+            FilePond.setOptions({
+                server: {
+                    url: '/upload',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    process: {
+                        method: 'POST',
+                        withCredentials: false,
+                        onload: (response) => {
+                            pond_id = response; //get the uniq id
+                            return response;
+                        },
+                    },
+                    revert: {
+                        method: 'DELETE',
+                        withCredentials: false,
+                        onload: (response) => {
+                            pond_id = 0;
+
+                        },
+
+                    }
+
+                },
+            });
+        });
+    </script>
     @stack('script')
 
 </body>

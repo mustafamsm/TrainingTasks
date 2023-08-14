@@ -177,6 +177,13 @@ return [
     'country'=>'Country',
     'author'=>'Author',
     'status'=>'Status',
+    'title_ar'=>'Title Ar',
+    'title_en'=>'Title En',
+    'name_ar'=>'Name Ar',
+    'name_en'=>'Name En',
+    'description_ar'=>'Description Ar',
+    'description_en'=>'Description En',
+    
     ],
 
 ];

@@ -11,19 +11,22 @@
                 <div class="modal-body">
 
 
-                    <label>@lang('site.name') </label>
-                    <p id="show-name">{{$book->name}}</p>
-                    <label>@lang('site.author') </label>
-                    <p id="show-author">{{$book->author}}</p>
-                    <label>@lang('site.price') </label>
-                    <p id="show-price">{{$book->price}}</p>
-                    <label>@lang('site.publication') </label>
-                    <p id="show-publication">{{$book->publication}}</p>
-                    <label>@lang('site.category') </label>
-                    <p id="show-category_id">{{$book->category->name}}</p>
-                    <label>@lang('site.description') </label>
-                    <p id="show-description">{!! $book->description !!}</p>
-
+                    <label>@lang('site.title_ar') </label>
+                    <p >{{$silder->title_ar}}</p>
+                   <label>@lang('site.title_en') </label>
+                    <p >{{$silder->title_en}}</p>
+                    <label>@lang('site.start_date') </label>
+                    <p >{{$silder->start_date}}</p>
+                    <label>@lang('site.end_date') </label>
+                    <p >{{$silder->end_date}}</p>
+                    <label>@lang('site.status') </label>
+                    <p >{{$silder->status}}</p>
+                    <label>@lang('site.image') </label>
+                    <img src="{{asset('storage/'.$silder->image)}}" width="100px" height="100px" alt="{{$silder->image}}"><br>
+                    <label>@lang('site.description_ar') </label>
+                    <p >{!! $silder->description_ar !!}</p>
+                    <label>@lang('site.description_en') </label>
+                    <p >{!! $silder->description_en !!}</p>
 
                 </div>
                 <div class="modal-footer justify-content-between">
@@ -37,3 +40,9 @@
         <!-- /.modal-dialog -->
     </div>
     <!-- /End Show modal -->
+    <script>
+        $('.show-modal-render').on('hidden.bs.modal', function(e) {
+
+            $('.show-modal-render').remove();
+        });
+    </script>

@@ -42,7 +42,8 @@ class CategoryController extends Controller
                 class="btn btn-info  btn-sm"
                 data-toggle="modal" data-target="#modal-edit"
                   
-                data-name="' . $row->name . '"  
+                data-name_ar="' . $row->name_ar . '"  
+                data-name_en="' . $row->name_en . '"  
                 data-status="' . $row->status . '"
                 data-image="' . $row->image . '"
                 data-id="' . $row->id . '"
@@ -56,7 +57,8 @@ class CategoryController extends Controller
                 <button   type="button"
                 data-toggle="modal" data-target="#modal-show"
                 class="btn btn-success  btn-sm"
-                data-name="' . $row->name . '"  
+                data-name_ar="' . $row->name_ar . '"  
+                data-name_en="' . $row->name_en . '"  
                 data-status="' . $row->status . '"
                 data-image="' . $row->image . '"
                 >' . __('site.show') . '</button>

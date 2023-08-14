@@ -10,7 +10,7 @@ class Book extends Model
 {
     use HasFactory,SoftDeletes;
     protected $fillable=[
-        'name','author','category_id','publication','description','price'
+        'name_ar','name_en','author','category_id','publication','description_ar','description_en','price','image'
     ];
 
     public function category(){

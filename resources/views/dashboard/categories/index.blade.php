@@ -1,8 +1,9 @@
 @extends('layouts.dashboard')
 @section('breadCrumb')
     @parent
-    <li class="breadcrumb-item "><a href="{{ route('dashboard.index') }}">{{__('site.dashboard')}}</a></li>
-    <li class="breadcrumb-item active"><a href="{{ route('dashboard.categories.index') }}">{{__('site.categories')}}</a></li>
+    <li class="breadcrumb-item "><a href="{{ route('dashboard.index') }}">{{ __('site.dashboard') }}</a></li>
+    <li class="breadcrumb-item active"><a href="{{ route('dashboard.categories.index') }}">{{ __('site.categories') }}</a>
+    </li>
 @endsection
 @section('content')
     @if (session()->has('success'))
@@ -18,17 +19,17 @@
             <div class="col">
                 <div class="card">
                     <div class="card-header">
-                        <i class="fa fa-align-justify"></i> {{__('site.categories')}}  
+                        <i class="fa fa-align-justify"></i> {{ __('site.categories') }}
                         <div class="card-tools">
-                            
+
                             <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-default">
-                               {{ __('site.add') }}
+                                {{ __('site.add') }}
                             </button>
 
                         </div>
                     </div>
                     <div class="card-body">
-                        <table class="table display responsive nowrap"   style="width:100%" id="table_id">
+                        <table class="table display responsive nowrap" style="width:100%" id="table_id">
                             <thead>
                                 <tr>
                                     <th>{{ __('site.id') }}</th>
@@ -66,9 +67,15 @@
                         <input type="hidden" name="_token" value="{{ csrf_token() }}">
                         <div class="card-body">
                             <div class="form-group">
-                                <label for="name">@lang('site.name')</label>
-                                <input type="text" class="form-control " placeholder="Name Of Category" name="name"
-                                    id="name">
+                                <label for="name_ar">@lang('site.name_ar')</label>
+                                <input type="text" class="form-control " placeholder="Name Of Category" name="name_ar"
+                                    id="name_ar">
+
+                            </div>
+                            <div class="form-group">
+                                <label for="name_en">@lang('site.name_en')</label>
+                                <input type="text" class="form-control " placeholder="Name Of Category" name="name_en"
+                                    id="name_en">
 
                             </div>
                             <div class="form-group">
@@ -125,10 +132,14 @@
                         <div class="card-body">
                             <div class="form-group">
                                 <input type="hidden" id="category_id">
-                                <label for="name">@lang('site.name')</label>
-                                <input type="text" class="form-control " placeholder="Name Of Category"
-                                    name="name" id="name">
-
+                                <label for="name_ar">@lang('site.name_ar')</label>
+                                <input type="text" class="form-control " placeholder="Name Of Category "
+                                    name="name_ar" id="name_ar">
+                            </div>
+                            <div class="form-group">
+                                <label for="name_en">@lang('site.name_en')</label>
+                                <input type="text" class="form-control " placeholder="Name Of Category "
+                                    name="name_en" id="name_en">
                             </div>
                             <div class="form-group">
                                 <label for="image">@lang('site.image')</label>
@@ -175,8 +186,10 @@
                 <div class="modal-body">
 
 
-                    <label>@lang('site.name') </label>
-                    <p id="show-name"></p>
+                    <label>@lang('site.name_ar') </label>
+                    <p id="show-name_ar"></p>
+                    <label>@lang('site.name_en') </label>
+                    <p id="show-name_en"></p>
                     <label>@lang('site.image') </label>
                     <img src="" class="responsive" alt="imge" id="show-image" width="120px"
                         height="120px"><br>
@@ -199,7 +212,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">{{__('site.books')}}</h4>
+                    <h4 class="modal-title">{{ __('site.books') }}</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -235,28 +248,28 @@
     <!-- /End Show Books modal -->
     <script
         src="https://cdn.jsdelivr.net/npm/jquery@3.7.0/dist/jquery.min.js
-                                                                                                                            ">
+                                                                                                                                ">
     </script>
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     @push('script')
         <script>
             @php
-            $curan = LaravelLocalization::getCurrentLocale();  
-
+                $curan = LaravelLocalization::getCurrentLocale();
+                
             @endphp
             $(function() {
                 var table = $('#table_id').DataTable({
                     processing: true,
                     serverSide: true,
-                   
+
                     ajax: "{{ Route('dashboard.categories.getAll') }}",
                     columns: [{
                             data: 'id',
                             name: 'id'
                         },
                         {
-                            data: 'name',
-                            name: 'name'
+                            data: 'name_' + '{{ $curan }}',
+                            name: 'name_' + '{{ $curan }}'
                         },
 
 
@@ -293,7 +306,7 @@
                                 console.log('trrue');
                                 $.ajax({
                                     type: 'DELETE',
-                                    url: `/{{$curan}}/dashboard/categories/${id}`,
+                                    url: `/{{ $curan }}/dashboard/categories/${id}`,
                                     data: {
                                         '_token': '{{ csrf_token() }}',
 
@@ -342,7 +355,7 @@
                     errorAlert.hide();
                 })
 
-                ///Add Ajax 
+                ///Add Ajax
                 $(document).on('click', '.btn-submit', function(e) {
 
                     e.preventDefault();
@@ -357,7 +370,7 @@
                     }
                     $.ajax({
                         type: 'post',
-                        url: `/{{$curan}}/dashboard/categories/`,
+                        url: `/{{ $curan }}/dashboard/categories/`,
                         data: formData,
                         processData: false,
                         contentType: false,
@@ -391,14 +404,16 @@
                 ///edit modal and fill input
                 $('#modal-edit').on('show.bs.modal', function(event) {
                     var button = $(event.relatedTarget);
-                    var name = button.data('name');
+                    var name_ar = button.data('name_ar');
+                    var name_en = button.data('name_en');
                     var category_id = button.data('id');
                     var image = button.data('image');
                     var status = button.data('status');
                     var image_url = `{{ asset('storage/category-images/${image}') }}`;
                     console.log('image', image_url);
                     var modal = $(this);
-                    modal.find('#name').val(name);
+                    modal.find('#name_ar').val(name_ar);
+                    modal.find('#name_en').val(name_en);
                     modal.find('#image').attr('src', image_url);
                     var statusSelect = $('#statusSelect');
                     statusSelect.val(status).trigger('change');
@@ -406,10 +421,11 @@
 
                 });
 
-                //show modal 
+                //show modal
                 $('#modal-show').on('show.bs.modal', function(event) {
                     var button = $(event.relatedTarget);
-                    var name = button.data('name');
+                    var name_ar = button.data('name_ar');
+                    var name_en = button.data('name_en');
                     var status = button.data('status');
                     var status_name = '';
                     if (status == 1) {
@@ -421,7 +437,8 @@
                     var image_url = `{{ asset('storage/category-images/${image}') }}`;
                     var modal = $(this);
                     modal.find('#show-image').attr('src', image_url);
-                    modal.find('#show-name').html(name);
+                    modal.find('#show-name_ar').html(name_ar);
+                    modal.find('#show-name_en').html(name_en);
                     modal.find('#show-status').html(status_name);
 
                 });
@@ -444,7 +461,7 @@
                     $.ajax({
                         type: 'POST',
 
-                        url: `/{{$curan}}/dashboard/category/ajaxupdate/${id}`,
+                        url: `/{{ $curan }}/dashboard/category/ajaxupdate/${id}`,
 
                         data: formData,
                         processData: false,
@@ -482,7 +499,7 @@
                     if (table !== null) {
                         table.destroy();
                     }
-                     table = $('#book_table').DataTable({
+                    table = $('#book_table').DataTable({
                         processing: true,
                         serverSide: true,
                         ajax: "/dashboard/categories/" + id,
@@ -491,8 +508,8 @@
                                 name: 'id'
                             },
                             {
-                                data: 'name',
-                                name: 'name'
+                                data: 'name_'+'{{ $curan }}',
+                                name: 'name_'+'{{ $curan }}'
                             },
 
 
@@ -547,7 +564,7 @@
 
                         reader.readAsDataURL(this.files[0]);
                     }
-                    
+
                 });
             })(jQuery);
         </script>
