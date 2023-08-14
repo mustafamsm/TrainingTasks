@@ -3,8 +3,10 @@
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\frontController;
 use App\Http\Controllers\SilderController;
 use App\Models\Book;
+use App\View\Components\Front;
 use Illuminate\Support\Facades\Route;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
@@ -18,6 +20,11 @@ use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+
+Route::get('/home',[frontController::class,'index'])->name('home');
+
+
 Route::post('/upload',[\App\Http\Controllers\UploadController::class,'upload'])->name('upload');
 Route::delete('/upload',[\App\Http\Controllers\UploadController::class,'delete'])->name('delete');
 
