@@ -79,7 +79,7 @@
 
 				<div class="col-md-2">
 					<div class="main-logo">
-						<a href="index.html"><img src="images/main-logo.png" alt="logo"></a>
+						<a href="index.html"><img src="{{asset('dist/images/main-logo.png')}}" alt="logo"></a>
 					</div>
 
 				</div>
@@ -140,27 +140,20 @@
 				</button>
 
 				<div class="main-slider pattern-overlay">
-					<div class="slider-item">
-						<div class="banner-content">
-							<h2 class="banner-title">Life of the Wild</h2>
-							<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed eu feugiat amet, libero ipsum enim pharetra hac. Urna commodo, lacus ut magna velit eleifend. Amet, quis urna, a eu.</p>
-							<div class="btn-wrap">
-								<a href="#" class="btn btn-outline-accent btn-accent-arrow">Read More<i class="icon icon-ns-arrow-right"></i></a>
-							</div>
-						</div><!--banner-content--> 
-						<img src="images/main-banner1.jpg" alt="banner" class="banner-image">
-					</div><!--slider-item-->
+					@foreach ($silders as $silder)
 
 					<div class="slider-item">
 						<div class="banner-content">
-							<h2 class="banner-title">Birds gonna be Happy</h2>
-							<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed eu feugiat amet, libero ipsum enim pharetra hac. Urna commodo, lacus ut magna velit eleifend. Amet, quis urna, a eu.</p>
+							<h2 class="banner-title">{{$silder->title}}</h2>
+							<p>{{$silder->description}}</p>
 							<div class="btn-wrap">
 								<a href="#" class="btn btn-outline-accent btn-accent-arrow">Read More<i class="icon icon-ns-arrow-right"></i></a>
 							</div>
 						</div><!--banner-content--> 
-						<img src="images/main-banner2.jpg" alt="banner" class="banner-image">
+						<img src="{{asset('storage/silder-images/'.$silder->image)}}" alt="banner" class="banner-image"    style="object-fit: contain;position: relative; height: 350px ;width: 650px;">
 					</div><!--slider-item-->
+					@endforeach
+					
 
 				</div><!--slider-->
 					
@@ -175,7 +168,7 @@
 </section>
 {{$slot}}
 
-<section id="download-app" class="leaf-pattern-overlay">
+{{-- <section id="download-app" class="leaf-pattern-overlay">
 	<div class="corner-pattern-overlay"></div>
 		<div class="container">
 			<div class="row">
@@ -203,7 +196,7 @@
 				</div>
 			</div>
 		</div>
-</section>
+</section> --}}
 
 <footer id="footer">
 	<div class="container">
@@ -213,7 +206,7 @@
 				
 				<div class="footer-item">
 					<div class="company-brand">
-						<img src="images/main-logo.png" alt="logo" class="footer-logo">
+						<img src="{{asset('dist/images/main-logo.png')}}" alt="logo" class="footer-logo">
 						<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sagittis sed ptibus liberolectus nonet psryroin. Amet sed lorem posuere sit iaculis amet, ac urna. Adipiscing fames semper erat ac in suspendisse iaculis.</p>
 					</div>
 				</div>

@@ -22,37 +22,37 @@ class SettingsController extends Controller
         return view('dashboard.settings.index');
         
     }
-    public function getAll(){
+    // public function getAll(){
 
-        $group=Setting::all();
+    //     $group=Setting::all();
     
-        return DataTables::of($group)
-        ->addIndexColumn()
-        ->addColumn('action', function ($row) {
-            return $btn = '
+    //     return DataTables::of($group)
+    //     ->addIndexColumn()
+    //     ->addColumn('action', function ($row) {
+    //         return $btn = '
 
-                <button  type="button"
-                class="btn btn-info  btn-sm editModalBTn"
+    //             <button  type="button"
+    //             class="btn btn-info  btn-sm editModalBTn"
 
-                data-id="' . $row->id . '"
-                ><i class="fa fa-pencil" aria-hidden="true"></i>  '  . __('site.edit') . '</button>
+    //             data-id="' . $row->id . '"
+    //             ><i class="fa fa-pencil" aria-hidden="true"></i>  '  . __('site.edit') . '</button>
 
-                <button ajax_id="' . $row->id . '" type="button"
-                class="btn btn-danger delete_btn btn-sm"
+    //             <button ajax_id="' . $row->id . '" type="button"
+    //             class="btn btn-danger delete_btn btn-sm"
 
-                >' . __('site.delete') . '</button>
-                <button   type="button"
+    //             >' . __('site.delete') . '</button>
+    //             <button   type="button"
 
-                class="btn btn-success showBtn btn-sm"
-                data-id="' . $row->id . '"
+    //             class="btn btn-success showBtn btn-sm"
+    //             data-id="' . $row->id . '"
 
-                >' . __('site.show') . '</button>
+    //             >' . __('site.show') . '</button>
 
 
-                ';
-        })->rawColumns(['action'])
-        ->toJson();
-    }
+    //             ';
+    //     })->rawColumns(['action'])
+    //     ->toJson();
+    // }
 
     /**
      * Show the form for creating a new resource.

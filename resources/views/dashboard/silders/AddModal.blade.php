@@ -56,12 +56,12 @@
                             </select>
                         </div>
 
-                        <div class="form-group">
+                         
                             <label for="image">@lang('site.image')</label>
                             <input type="file" id="file" name="image"
                             >
                              
-                        </div>
+                       
                     </div>
             </div>
             <div class="modal-footer justify-content-between">

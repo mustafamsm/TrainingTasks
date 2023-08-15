@@ -127,7 +127,7 @@ public function getAll(){
         $request->validate([
             'title_ar' => 'required|string|max:255',
             'title_en' => 'required|string|max:255',
-            'image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+             
             'status' => 'required|in:0,1|max:255',
             'description_ar' => 'required|string|max:255',
             'description_en' => 'required|string|max:255',
@@ -138,20 +138,18 @@ public function getAll(){
         $silder = Silder::findOrFail($id);
         $old_image = $silder->image;
         $data=$request->except('image');
-        $new_image=null;
-        if ($request->hasFile('image')) {
-            $file = $request->file('image');
-            $new_name = Str::random(20) . '.' . $file->getClientOriginalExtension();
+       
+        if ($request->has('image')) {
+            $tempFile = TemporaryFile::where('folder', $request->image)->first();
+            if ($tempFile) {
+                Image::Image($request,$tempFile,'book-images',$silder);
+            }
+            Storage::disk('public')->delete('silder-images/' . $old_image);
 
-            $path = $file->storeAs('silder-images', $new_name, [
-                'disk' => 'public'
-            ]);
         }
 
         $silder->update($data);
-        if ($old_image && $new_image) {
-            Storage::disk('public')->delete( $old_image);
-        }
+     
 
         return response()->json(['success' => true, 'message' => __('site.updated successfully')]);
     }
@@ -162,7 +160,7 @@ public function getAll(){
         $request->validate([
             'title_ar' => 'required|string|max:255',
             'title_en' => 'required|string|max:255',
-            'image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+             
             'status' => 'required|in:0,1|max:255',
             'description_ar' => 'required|string|max:255',
             'description_en' => 'required|string|max:255',
@@ -173,20 +171,18 @@ public function getAll(){
         $silder = Silder::findOrFail($id);
         $old_image = $silder->image;
         $data=$request->except('image');
-        $new_image=null;
-        if ($request->hasFile('image')) {
-            $file = $request->file('image');
-            $new_name = Str::random(20) . '.' . $file->getClientOriginalExtension();
+       
+        if ($request->has('image')) {
+            $tempFile = TemporaryFile::where('folder', $request->image)->first();
+            if ($tempFile) {
+                Image::Image($request,$tempFile,'silder-images',$silder);
+            }
+            Storage::disk('public')->delete('silder-images/' . $old_image);
 
-            $path = $file->storeAs('silder-images', $new_name, [
-                'disk' => 'public'
-            ]);
         }
 
         $silder->update($data);
-        if ($old_image && $new_image) {
-            Storage::disk('public')->delete($old_image);
-        }
+     
 
         return response()->json(['success' => true, 'message' => __('site.updated successfully')]);
     }

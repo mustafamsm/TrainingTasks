@@ -60,9 +60,9 @@
 
                         <div class="form-group">
                             <label for="image">@lang('site.image')</label>
-                            <input type="file" class="form-control image " id="file" name="image"
-                                accept="png,jpeg,jpg">
-                            <img src="{{ asset('storage/' . $silder->image) }}" class="img-thumbnail image-preview"
+                            <input type="file" id="file" name="image"
+                                >
+                            <img src="{{ asset('storage/silder-images/' . $silder->image) }}" class="img-thumbnail image-preview"
                                 alt="" width="120px" height="120px" id="image"
                                 name="image_preview"><br><br>
                         </div>

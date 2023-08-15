@@ -2,14 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Book;
-use App\Models\Category;
 use COM;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
+use App\Models\Book;
+use App\Helpers\Image;
+use App\Models\Category;
 use Illuminate\Support\Str;
-use Yajra\DataTables\Contracts\DataTable;
+use Illuminate\Http\Request;
+use App\Models\TemporaryFile;
+use Illuminate\Support\Facades\Storage;
 use Yajra\DataTables\Facades\DataTables;
+use Yajra\DataTables\Contracts\DataTable;
 
 class CategoryController extends Controller
 {
@@ -87,24 +89,26 @@ class CategoryController extends Controller
     {
 
         $request->validate([
-            'name' => 'required|min:3|max:55',
-            'image' => 'required|image',
+            'name_ar' => 'required|min:3|max:55',
+            'name_en' => 'required|min:3|max:55',
+            'image' => 'required',
             'status' => 'required|in:0,1'
         ]);
-        if ($request->hasFile('image')) {
-            $file = $request->file('image');
-            $name = Str::random(20) . '.' . $file->getClientOriginalExtension();
 
-            $path = $file->storeAs('category-images', $name, [
-                'disk' => 'public'
-            ]);
-        }
-
-        Category::create([
-            'name' => $request->name,
-            'image' => $name,
+        $category=Category::create([
+            'name_ar' => $request->name_ar,
+            'name_en' => $request->name_en,
+            'image' => '',
             'status' => $request->status
         ]);
+
+        $tempFile = TemporaryFile::where('folder', $request->image)->first();
+        if($tempFile){
+            Image::Image($request, $tempFile, 'category-images', $category);
+        }
+         
+
+       
         return response()->json(['success' => true, 'message' => __('site.added successfully')]);
     }
 
@@ -136,28 +140,27 @@ class CategoryController extends Controller
     {
 
         $request->validate([
-            'name' => 'required|min:3|max:55',
-            'image' => 'image',
+            'name_ar' => 'required|min:3|max:55',
+            'name_en' => 'required|min:3|max:55',
+             
         ]);
         $category = Category::findOrFail($id);
         $old_iamge = $category->image;
         $data = $request->except('image');
-        $new_image = null;
-        if ($request->hasFile('image')) {
-            $file = $request->file('image');
-            $new_image = Str::random(20) . '.' . $file->getClientOriginalExtension();
-            $path = $file->storeAs('category-images', $new_image, [
-                'disk' => 'public'
-            ]);
+        
+        if ($request->has('image')) {
+            $tempFile = TemporaryFile::where('folder', $request->image)->first();
+            if ($tempFile) {
+                Image::Image($request,$tempFile,'category-images',$category);
+            }
+            Storage::disk('public')->delete('category-images/' . $old_iamge);
+
         }
-        if ($new_image) {
-            $data['image'] = $new_image;
-        }
+        
+       
 
         $category->update($data);
-        if ($old_iamge && $new_image) {
-            Storage::disk('public')->delete('category-images/' . $old_iamge);
-        }
+        
 
         return redirect()->route('dashboard.categories.index')->with('success', __('site.updated_successfully'));
     }
@@ -165,32 +168,29 @@ class CategoryController extends Controller
     public function ajaxUpdate(Request $request, $id)
     {
         $request->validate([
-            'name' => 'required|min:3|max:55',
-            'image' => 'image',
+            'name_ar' => 'required|min:3|max:55',
+            'name_en' => 'required|min:3|max:55',
+             
         ]);
         $category = Category::findOrFail($id);
         $old_iamge = $category->image;
-
         $data = $request->except('image');
+        
+        if ($request->has('image')) {
+            $tempFile = TemporaryFile::where('folder', $request->image)->first();
+            if ($tempFile) {
+                Image::Image($request,$tempFile,'category-images',$category);
+            }
+            Storage::disk('public')->delete('category-images/' . $old_iamge);
 
-
-        $new_image = null;
-        if ($request->hasFile('image')) {
-            $file = $request->file('image');
-            $new_image = Str::random(20) . '.' . $file->getClientOriginalExtension();
-            $path = $file->storeAs('category-images', $new_image, [
-                'disk' => 'public'
-            ]);
         }
-        if ($new_image) {
-            $data['image'] = $new_image;
-        }
+        
+       
 
         $category->update($data);
-        if ($old_iamge && $new_image) {
-            Storage::disk('public')->delete('category-images/' . $old_iamge);
-        }
-        return response()->json(['success' => true, 'message' => __('site.updated_successfully')]);
+        
+
+        return redirect()->route('dashboard.categories.index')->with('success', __('site.updated_successfully'));
     }
     public function destroy($id)
     {

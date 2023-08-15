@@ -2,9 +2,11 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
 class Book extends Model
 {
@@ -15,5 +17,11 @@ class Book extends Model
 
     public function category(){
         return $this->belongsTo(Category::class);
+    }
+
+    public function getNameAttribute(){
+        $locale = LaravelLocalization::getCurrentLocale();
+        $column = "name_" . $locale;
+        return $this->$column;
     }
 }

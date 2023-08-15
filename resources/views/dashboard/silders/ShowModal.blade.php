@@ -40,9 +40,4 @@
         <!-- /.modal-dialog -->
     </div>
     <!-- /End Show modal -->
-    <script>
-        $('.show-modal-render').on('hidden.bs.modal', function(e) {
-
-            $('.show-modal-render').remove();
-        });
-    </script>
+   

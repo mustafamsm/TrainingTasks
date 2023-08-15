@@ -2,15 +2,18 @@
 
 namespace App\View\Components;
 
+use App\Models\Silder;
 use Illuminate\View\Component;
 
 class Front extends Component
 {
     public $title;
+    public $silders;
   
     public function __construct($title)
     {
         $this->title = $title;
+        $this->silders = Silder::active()->date()->get();
         
 
     }
@@ -24,7 +27,7 @@ class Front extends Component
     {
         return view('components.front',[
             'title' => $this->title,
-            
+            'silders' => $this->silders,
         ]);
     }
 }

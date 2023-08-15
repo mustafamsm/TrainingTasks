@@ -191,43 +191,42 @@
                 });
 
                 $(document).on('click', '#add-btn', function(e) {
-                    this.disabled = true;
+                    
                     e.preventDefault();
-                    if ($('.modal-add-render').length == 0) {
+                    
                         axios.get(`/{{ $curan }}/dashboard/silders/create`)
                             .then(res => {
+                                $('.modal-backdrop').remove();
                                 $('#modal-box').empty();
+                                $
                                 $('#modal-box').append(res.data.modalContent);
                                 // Show the Bootstrap modal
                                 $('.modal-add-render').modal('show');
-                                this.disabled = false;
+                                
                             }).catch(error => {
                                 toastr.error(error.response.data.message);
                             })
-                    } else {
-                        $('.modal-add-render').modal('show');
-                    }
+                   
                 })
 
               
 
                 $(document).on('click', '.editModalBTn', function(e) {
-                    this.disabled = true;
+                     
                     e.preventDefault();
                     var id = $(this).data('id');
-                    if ($('.modal-edit-render').length == 0) {
+                   
                         axios.get(`/{{ $curan }}/dashboard/silders/${id}/edit`)
                             .then(res => {
+                                $('.modal-backdrop').remove();
                                 $('#modal-box').empty();
                                 $('#modal-box').append(res.data.modalContent);
                                 $('.modal-edit-render').modal('show');
-                                this.disabled = false;
+                                
                             }).catch(error => {
                                 toastr.error(error.response.data.message);
                             })
-                    } else {
-                        $('.modal-edit-render').modal('show');
-                    }
+                   
                 });
 
         
@@ -237,18 +236,17 @@
                 $(document).on('click', '.showBtn', function(e) {
                     e.preventDefault();
                     var id = $(this).data('id');
-                    if ($('.show-modal-render').length == 0) {
+                  
                         axios.get(`/{{ $curan }}/dashboard/silders/${id}`)
                             .then(res => {
+                                $('.modal-backdrop').remove();
                                 $('#modal-box').empty();
                                 $('#modal-box').append(res.data.modalContent);
                                 $('.show-modal-render').modal('show');
                             }).catch(error => {
                                 toastr.error(error.response.data.message);
                             })
-                    } else {
-                        $('.show-modal-render').modal('show');
-                    }
+                    
                 });
              
 

@@ -11,6 +11,7 @@ class Image
 
     public static function Image($request, $tmpFile, $folder, $model)
     {
+        info('iam in image helper');
 
         File::copy(storage_path('app/public/images/tmp/' . $request->image . '/' . $tmpFile->filename), storage_path('app/public/'.$folder.'/'  . $tmpFile->filename));
         $model->image = $tmpFile->filename;

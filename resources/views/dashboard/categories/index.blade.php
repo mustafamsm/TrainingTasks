@@ -80,14 +80,12 @@
                             </div>
                             <div class="form-group">
                                 <label for="">@lang('site.image')</label>
-                                <input type="file" class="form-control image " id="file" name="image"
-                                    accept="png,jpeg,jpg">
+                                <input type="file" id="file" name="image"
+                                   >
 
 
                             </div>
-                            <div class="form-group">
-                                <img src="" width="100px" class="img-thumbnail image-preview">
-                            </div>
+                           
                             <div class="form-group">
                                 <label for="">@lang('site.status'):</label>
                                 <select name="status" id="" class="form-control">
@@ -144,8 +142,8 @@
                             <div class="form-group">
                                 <label for="image">@lang('site.image')</label>
 
-                                <input type="file" class="form-control image " id="file" name="image"
-                                    accept="png,jpeg,jpg">
+                                <input type="file"  id="file" name="image"
+                                    >
                                 <img src="" class="img-thumbnail image-preview" alt="" width="120px"
                                     height="120px" id="image"><br><br>
                             </div>
@@ -363,11 +361,12 @@
                     var form = $('#form')[0];
                     var formData = new FormData(form);
 
-                    var fileInput = $('#file')[0];
-                    var file = fileInput.files[0];
-                    if (file) {
-                        formData.append('image', file);
+                    //append the image to the form data to send it to the server using the uniq id from filepond
+                    if (pond_id != 0) {
+                        formData.append('image', pond_id);
                     }
+                    
+                    
                     $.ajax({
                         type: 'post',
                         url: `/{{ $curan }}/dashboard/categories/`,
@@ -446,15 +445,13 @@
                 $(document).on('click', '.btn-update', function(e) {
                     e.preventDefault();
                     var errorAlert = $('#edit-error-alert');
-                    var editBookForm = $('#Edit-form');
+                  
                     var id = $('#category_id').val();
                     var form = $('#Edit-form')[0];
                     var formData = new FormData(form);
 
-                    var fileInput = $('#file')[0];
-                    var file = fileInput.files[0];
-                    if (file) {
-                        formData.append('image', file);
+                    if (pond_id != 0) {
+                        formData.append('image', pond_id);
                     }
 
                     var errorAlert = $('#edit-error-alert');

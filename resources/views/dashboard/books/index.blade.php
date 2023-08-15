@@ -105,6 +105,7 @@
 
                     axios.get(`/{{ $curan }}/dashboard/books/create`)
                         .then(res => {
+                            $('.modal-backdrop').remove();
                             $('#model-box').empty();
                             $('#model-box').append(res.data.modalContent);
                             // Show the Bootstrap modal
@@ -118,17 +119,17 @@
                 })
 
                 $(document).on('click', '.editModalBTn', function(e) {
-                    this.disabled = true;
+                    
                     e.preventDefault();
                     var id = $(this).data('id');
 
                     axios.get(`/{{ $curan }}/dashboard/books/${id}/edit`)
                         .then(res => {
-
+                            $('.modal-backdrop').remove();
                             $('#model-box').empty();
                             $('#model-box').append(res.data.modalContent);
                             $('.modal-edit-render').modal('show');
-                            this.disabled = false;
+                            
                         }).catch(error => {
                             toastr.error(error.response.data.message);
                         })
@@ -143,6 +144,7 @@
 
                     axios.get(`/{{ $curan }}/dashboard/books/${id}`)
                         .then(res => {
+                            $('.modal-backdrop').remove();
                             $('#model-box').empty();
                             $('#model-box').append(res.data.modalContent);
                             $('.show-modal-render').modal('show');
