@@ -266,15 +266,29 @@
                                     </a>
                                 </li>
 
-                                {{-- <li class="nav-item">
-                                    <a href="{{ route('dashboard.silders.trached') }}" @class([
+                               
+                            </ul>
+                        </li>
+                        <li class="nav-item ">
+                            <a href="#" class="nav-link ">
+                                <i class="nav-icon fas fa-tachometer-alt"></i>
+                                <p>
+                                    @lang('site.settings')
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="{{ route('dashboard.settings.index') }}" @class([
                                         'nav-link ',
-                                        'active' => Route::currentRouteName() === 'dashboard.silders.trached',
+                                        'active' => Route::currentRouteName() === 'dashboard.settings.index',
                                     ])>
-                                        <i class="fa fa-trash nav-icon"></i>
-                                        <p>@lang('site.trash')</p>
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>@lang('site.settings')</p>
                                     </a>
-                                </li> --}}
+                                </li>
+
+                               
                             </ul>
                         </li>
                     </ul>

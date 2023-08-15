@@ -72,6 +72,44 @@ return [
     'description_en'=>'Description En',
     'title_ar'=>'Title Ar',
     'title_en'=>'Title En',
+    'settings'=>'Settings',
+    'logo'=>'Logo',
+    'favicon'=>'Favicon',
+    'about_us'=>'About Us',
+    'about_us_ar'=>'About Us Ar',
+    'about_us_en'=>'About Us En',
+    'contact_us'=>'Contact Us',
+    'contact_us_ar'=>'Contact Us Ar',
+    'contact_us_en'=>'Contact Us En',
+    'social_media'=>'Social Media',
+    'facebook'=>'Facebook',
+    'twitter'=>'Twitter',
+    'instagram'=>'Instagram',
+    'youtube'=>'Youtube',
+    'phone'=>'Phone',
+    'whatsapp'=>'Whatsapp',
+    'linkedin'=>'Linkedin',
+    'telegram'=>'Telegram',
+    'contact_info'=>'Contact Info',
+    'contact_info_ar'=>'Contact Info Ar',
+    'contact_info_en'=>'Contact Info En',
+    'general_settings'=>'General Settings',
+    'site_name_ar'=>'Site Name Ar',
+    'site_name_en'=>'Site Name En',
+    'site_description_ar'=>'Site Description Ar',
+    'site_description_en'=>'Site Description En',
+    'site_status'=>'Site Status ',
+    'site_message_ar'=>'Site Message Ar',
+    'site_message_en'=>'Site Message En',
+    'site_footer_ar'=>'Site Footer Ar',
+    'site_footer_en'=>'Site Footer En',
+    'site_status_open'=>'Site Status Open',
+    'site_status_close'=>'Site Status Close',
+    
+
+    
+    
+
     
 
 ];

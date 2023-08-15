@@ -22,33 +22,131 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-header">
-                        <i class="fa fa-align-justify"></i> @lang('site.books') List Table
-                        <div class="card-tools">
-                            <button type="button" class="btn btn-primary" id="add-btn">
-                                @lang('site.add')
-                            </button>
-                           
-                        </div>
+                        <i class="fa fa-align-justify"></i> @lang('site.settings') 
+                        
                     </div>
                     <div class="card-body">
-                        <table class="table display responsive nowrap" style="width:100%" id="table_id">
-                            <thead>
-                                <tr>
-                                    <th>@lang('site.id')</th>
-                                    <th>key</th>
-                                    <th>value</th>
-                                    <th>group</th>
-                                    <th>{{__('site.action')}}</th>
+                     <div class="container">
+                        <form action="{{route('dashboard.settings.store')}}" method="POST">
+                            @csrf
+                            {{-- <div class="form-group row">
+                                <label for="inputName" class="col-sm-1-12 col-form-label"></label>
+                                <div class="col-sm-1-12">
+                                    <input type="text" class="form-control" name="inputName" id="inputName" placeholder="">
+                                </div>
+                            </div> --}}
+                            <fieldset class="form-group row">
+                                <legend class="col-form-legend col-sm-1-12">{{__('site.general_settings')}}</legend>
 
-
+                              @foreach (config('settings') as $key=>$item)
+                              <legend class="col-form-legend col-sm-1-12">{{__('site.'.$key)}}</legend>
                                
-                                </tr>
-                            </thead>
-                            <tbody>
+                                @foreach ($item as $k=>$i)
+                                @if($k !=='site_favicon'  && $k !=='site_logo'   )
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                      <label for="name_ar">{{__('site.'.$k)}}</label>
+                                      <input type="text" name="{{$k}}" id="name_ar" class="form-control" placeholder="{{__('site.'.$k)}}" aria-describedby="helpId" value="{{old($k,$i)}}">
+                                    </div>
+                                </div>
+                                @else
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                      <label for="name_ar">{{__('site.'.$k)}}</label>
+                                      <input type="file" name="{{$k}}" id="name_ar" class="form-control"  " aria-describedby="helpId"  >
+                                    </div>
+                                </div>
+                                @endif
+                                @endforeach
+                                
+                              @endforeach
+                                {{-- <div class="col-sm-6">
+                                    <div class="form-group">
+                                      <label for="name_ar">{{__('site.site_name_ar')}}</label>
+                                      <input type="text" name="site_name_ar" id="name_ar" class="form-control" placeholder="{{__('site.site_name_ar')}}" aria-describedby="helpId" value="{{old('site_name_ar')}}">
+                                       
+                                    </div>
+                                    
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                      <label for="name_en">{{__('site.site_name_en')}}</label>
+                                      <input type="text" name="site_name_en" id="name_en" class="form-control" placeholder="{{__('site.site_name_en')}}" aria-describedby="helpId">
+                                       
+                                    </div>
+                                    
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                      <label for="description_ar">{{__('site.site_description_ar')}}</label>
+                                      <textarea   name="site_description_ar" id="description_ar" class="form-control" placeholder="{{__('site.site_description_ar')}}" aria-describedby="helpId"></textarea>
 
+                                    </div>
+                                    
+                                </div>  
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                      <label for="description_en">{{__('site.site_description_en')}}</label>
+                                      <textarea   name="site_description_en" id="description_en" class="form-control" placeholder="{{__('site.site_description_en')}}" aria-describedby="helpId"></textarea>
 
-                            </tbody>
-                        </table>
+                                    </div>
+                                    
+                                </div> 
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                      <label for="message_ar">{{__('site.site_message_ar')}}</label>
+                                      <textarea   name="site_message_ar" id="message_ar" class="form-control" placeholder="{{__('site.site_message_ar')}}" aria-describedby="helpId"></textarea>
+
+                                    </div>
+                                    
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                      <label for="message_en">{{__('site.site_message_ar')}}</label>
+                                      <textarea   name="site_message_en" id="message_en" class="form-control" placeholder="{{__('site.site_message_en')}}" aria-describedby="helpId"></textarea>
+
+                                    </div>
+                                    
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                      <label for="site_footer_ar">{{__('site.site_footer_ar')}}</label>
+                                      <textarea   name="site_footer_ar" id="footer_ar" class="form-control" placeholder="{{__('site.site_footer_ar')}}" aria-describedby="helpId"></textarea>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                      <label for="footer_en">{{__('site.site_footer_en')}}</label>
+                                      <textarea   name="site_footer_en" id="footer_en" class="form-control" placeholder="{{__('site.site_footer_en')}}" aria-describedby="helpId"></textarea>
+                                    </div>
+                                </div>
+                                 
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                      <label for="">{{__('site.site_status')}}</label>
+                                      
+                                      <select name="site_status" id="" class="form-control">
+                                            <option value="1">{{__('site.site_status_open')}}</option>
+                                            <option value="0">{{__('site.site_status_close')}}</option>
+                                      </select>
+                                     </div>
+                                </div> --}}
+                            </fieldset>
+                            {{-- <fieldset class="form-group row">
+                                <legend class="col-form-legend col-sm-1-12">{{__('site.contact_info')}}</legend>
+                                <div class="col-sm-1-12">
+                                    
+                                </div>
+                            </fieldset> --}}
+                  
+                           
+                            <div class="form-group row">
+                                <div class="offset-sm-2 col-sm-10">
+                                    <button type="submit" class="btn btn-primary">Action</button>
+                                </div>
+                            </div>
+                        </form>
+                     </div>
 
                     </div>
                 </div>
@@ -67,221 +165,6 @@
 
 
     @push('script')
-        <script>
-            $(document).ready(function() {
-                // get all books using yajra datatables
-                var table = $('#table_id').DataTable({
-                    processing: true,
-                    serverSide: true,
-                    serverSide: true,
-                    ajax: "{{ Route('dashboard.settings.getAll') }}",
-                    columns: [{
-                            data: 'id',
-                            name: 'id'
-                        },
-                        {
-                            data: 'key',
-                            name: 'key',
-                        },
-                        {
-                            data: 'value',
-                            name: 'value',
-                        },
-                        {
-                            data: 'group',
-                            name: 'group',
-                        },
- 
-                        {
-                            data: 'action',
-                            name: '@lang('site.action')',
-                            orderable: false,
-                            searchable: false
-
-                        }
-                    ]
-                });
-
-                // ============================================================
-
-                $(document).on('click', '#add-btn', function(e) {
-                    this.disabled = true;
-                    e.preventDefault();
-
-                    axios.get(`/{{ $curan }}/dashboard/settings/create`)
-                        .then(res => {
-                            $('#model-box').empty();
-                            $('#model-box').append(res.data.modalContent);
-                            // Show the Bootstrap modal
-                            $('.modal-add-render').modal('show');
-                            this.disabled = false;
-                        }).catch(error => {
-
-                            toastr.error(error.response.data.message);
-                        })
-
-                })
-
-                $(document).on('click', '.editModalBTn', function(e) {
-                    this.disabled = true;
-                    e.preventDefault();
-                    var id = $(this).data('id');
-
-                    axios.get(`/{{ $curan }}/dashboard/settings/${id}/edit`)
-                        .then(res => {
-
-                            $('#model-box').empty();
-                            $('#model-box').append(res.data.modalContent);
-                            $('.modal-edit-render').modal('show');
-                            this.disabled = false;
-                        }).catch(error => {
-                            toastr.error(error.response.data.message);
-                        })
-
-
-                });
-
-                $(document).on('click', '.showBtn', function(e) {
-                    this.disabled = true;
-                    e.preventDefault();
-                    var id = $(this).data('id');
-
-                    axios.get(`/{{ $curan }}/dashboard/settings/${id}`)
-                        .then(res => {
-                            $('#model-box').empty();
-                            $('#model-box').append(res.data.modalContent);
-                            $('.show-modal-render').modal('show');
-                            this.disabled = false;
-                        }).catch(error => {
-                            toastr.error(error.response.data.message);
-                        })
-
-                });
-
-
-               
-
-
-
-
-                // ============================================================
-                // submit form
-
-                $(document).on('click', '.btn-submit', function(e) {
-                    e.preventDefault();
-                    let errorAlert = $('#error-alert');
-                    errorAlert.empty();
-                    errorAlert.hide();
-
-                    var form = $('#form-add');
-                 
-
-                    axios.post('/{{ $curan }}/dashboard/settings',
-                    form.serialize()
-                        )
-                        .then(res => {
-                            toastr.success(res.data.message);
-                            $('#form-add').trigger('reset');
-                            $('#add-modal').modal('hide');
-                            $('#table_id').DataTable().draw(false);
-                        }).catch(error => {
-                            console.log(error);
-                            if (error.response.data && error.response.status === 422) {
-                                const errors = error.response.data.errors;
-                                let errorMessages = '';
-                                for (const field in errors) {
-                                    errors[field].forEach(message => {
-                                        errorMessages += `<li>${message}</li>`;
-                                    });
-                                }
-                                errorAlert.html(`<ul>${errorMessages}</ul>`);
-                                errorAlert.show();
-                            } else {
-                                alert('An error occurred');
-                            }
-                        });
-
-
-                });
-            });
-            $(document).on('click', '.btn-update', function(e) {
-                e.preventDefault();
-                var form = $('#Edit-form')[0];
-                var id = $('#book_id').val();
-
-
-                let formData = new FormData(form);
-                //append the image to the form data to send it to the server using the uniq id from filepond
-                if (pond_id != 0) {
-                    formData.append('image', pond_id);
-                }
-                var errorAlert = $('#edit-error-alert');
-                axios.put(`/{{ $curan }}/dashboard/books/${id}`, $('#Edit-form').serialize())
-                    .then(res => {
-                        toastr.success(res.data.message);
-                        $('#table_id').DataTable().draw(false);
-                    }).catch(error => {
-                        if (error.response.data && error.response.status === 422) {
-                            const errors = error.response.data.errors;
-                            let errorMessages = '';
-
-                            for (const field in errors) {
-                                errors[field].forEach(message => {
-                                    errorMessages += `<li>${message}</li>`;
-                                });
-                            }
-
-                            errorAlert.html(`<ul>${errorMessages}</ul>`);
-                            errorAlert.show();
-                        } else {
-                            alert('An error occurred');
-                        }
-                    })
-
-
-            });
-            ///Delete
-            $(document).on('click', '.delete_btn', function(e) {
-                e.preventDefault();
-                var id = $(this).attr('ajax_id');
-                console.log(id);
-                swal({
-                        title: "{{ __('site.are_you_sure') }}",
-                        icon: 'warning',
-                        buttons: true,
-                        confirmButtonColor: '#3085d6',
-                        cancelButtonColor: '#d33',
-                        confirmButtonText: 'Yes, delete it!'
-                    })
-                    .then((value) => {
-                        if (value) {
-
-                            axios.delete(`/{{ $curan }}/dashboard/books/${id}`)
-                                .then(res => {
-
-                                    if (res.data.status === true) {
-                                        $(`.Row${id}`).remove();
-                                        swal({
-                                            title: res.data.msg,
-                                            icon: "success",
-                                        })
-                                    } else {
-                                        console.error(res.data.msg);
-                                        swal({
-                                            title: res.data.msg,
-                                            icon: "error",
-                                        })
-
-                                    }
-                                }).catch(res => {
-                                    console.error(res.data);
-                                });
-
-
-                        }
-                    });
-
-            });
-        </script>
+      
     @endpush
 @endsection

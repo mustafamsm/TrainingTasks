@@ -46,7 +46,7 @@ class AppServiceProvider extends ServiceProvider
             }
 
             Config::set(['settings' => $all]);
-
+           
            
         }
     }
