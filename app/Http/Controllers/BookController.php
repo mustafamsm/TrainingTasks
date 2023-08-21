@@ -82,12 +82,23 @@ class BookController extends Controller
             'description_en' => 'nullable|string',
             'price' => 'required|numeric',
             'category_id' => 'required|exists:categories,id',
-            'image' => 'required|exists:temporary_files,folder',
+            
 
         ]);
-       
-        $book= Book::create($request->input());
-        $tempFile = TemporaryFile::where('folder', $request->image)->first();
+       $book=Book::create([
+        'name_ar'=>$request->name_ar,
+        'name_en'=>$request->name_en,
+        'author'=>$request->author,
+        'publication'=>$request->publication,
+        'description_ar'=>$request->description_ar,
+        'description_en'=>$request->description_en,
+        'price'=>$request->price,
+        'category_id'=>$request->category_id,
+        'image'=>''
+       ]);
+        // $book= Book::create($request->except('image'));
+        $image=Str::substr($request->image, 0, 24);
+        $tempFile = TemporaryFile::where('folder', $image)->first();
         if ($tempFile) {
             Image::Image($request,$tempFile,'book-images',$book);
 
@@ -125,9 +136,9 @@ class BookController extends Controller
         $book = Book::findOrFail($id);
         $old_iamge = $book->image;
         $data = $request->except('image');
-
+        $image=Str::substr($request->image, 0, 24);
         if ($request->has('image')) {
-            $tempFile = TemporaryFile::where('folder', $request->image)->first();
+            $tempFile = TemporaryFile::where('folder', $image)->first();
             if ($tempFile) {
                 Image::Image($request,$tempFile,'book-images',$book);
             }

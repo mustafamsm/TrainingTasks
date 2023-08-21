@@ -2,6 +2,7 @@
 namespace App\Helpers;
 
 
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 
@@ -12,8 +13,8 @@ class Image
     public static function Image($request, $tmpFile, $folder, $model)
     {
         info('iam in image helper');
-
-        File::copy(storage_path('app/public/images/tmp/' . $request->image . '/' . $tmpFile->filename), storage_path('app/public/'.$folder.'/'  . $tmpFile->filename));
+    $image=Str::substr($request->image, 0, 24);
+        File::copy(storage_path('app/public/images/tmp/' . $image . '/' . $tmpFile->filename), storage_path('app/public/'.$folder.'/'  . $tmpFile->filename));
         $model->image = $tmpFile->filename;
         $model->save();
         Storage::deleteDirectory('public/images/tmp/' . $tmpFile->folder, true);

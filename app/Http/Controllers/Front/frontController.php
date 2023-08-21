@@ -13,7 +13,7 @@ class frontController extends Controller
     public function index(){
 
       $books=Book::latest()->take(4)->get();
-      $categorys=Category::all();
+      $categorys=Category::with('books')->get();
         return view('front.index',compact('books','categorys'));
     }
 }

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 	<html lang="en">
 	<head>
-		<title>Book Store {{$title}}</title>
+		<title>{{config('settings.general.site_name_'.LaravelLocalization::getCurrentLocale())}} {{$title}}</title>
 		<meta charset="utf-8">
 	    <meta http-equiv="X-UA-Compatible" content="IE=edge">
 	    <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,7 +10,8 @@
 	    <meta name="author" content="">
 	    <meta name="keywords" content="">
 	    <meta name="description" content="">
-
+		<!-- favicon -->
+		<link rel="shortcut icon" href="{{asset('storage/site/'.config('settings.general.site_favicon'))}}">
 	    <link rel="stylesheet" type="text/css" href="{{asset('dist/css/normalize.css')}}">
 	    <link rel="stylesheet" type="text/css" href="{{asset('dist/css/vendor.css')}}">
 	    <link rel="stylesheet" type="text/css" href="{{asset('dist/css/style.css')}}">
@@ -35,17 +36,15 @@
 					<div class="social-links">
 						<ul>
 							<li>
-								<a href="#"><i class="icon icon-facebook"></i></a>
+								<a href="{{config('settings.social.site_facebook')}}"><i class="icon icon-facebook"></i></a>
 							</li>
 							<li>
-								<a href="#"><i class="icon icon-twitter"></i></a>
+								<a href="{{config('settings.social.site_twitter')}}"><i class="icon icon-twitter"></i></a>
 							</li>
 							<li>
-								<a href="#"><i class="icon icon-youtube-play"></i></a>
+								<a href="{{config('settings.social.site_youtube')}}"><i class="icon icon-youtube-play"></i></a>
 							</li>
-							<li>
-								<a href="#"><i class="icon icon-behance-square"></i></a>
-							</li>
+							 
 						</ul>
 					</div><!--social-links-->
 				</div>
@@ -60,8 +59,8 @@
 								<a href="#" class="search-button search-toggle" data-selector="#header-wrap">
 									<i class="icon icon-search"></i>
 								</a>
-								<form role="search" method="get" class="search-box">
-									<input class="search-field text search-input" placeholder="Search" type="search">
+								<form role="search" method="get" class="search-box" action="{{route('books')}}">
+									<input class="search-field text search-input" placeholder="Search" name="search" type="search" value="{{request()->search}}">
 								</form>
 							</div>
 						</div>
@@ -79,7 +78,7 @@
 
 				<div class="col-md-2">
 					<div class="main-logo">
-						<a href="index.html"><img src="{{asset('dist/images/main-logo.png')}}" alt="logo"></a>
+						<a href="index.html"><img src="{{asset('storage/site/'.config('settings.general.site_logo'))}}" alt="logo"></a>
 					</div>
 
 				</div>
@@ -207,7 +206,7 @@
 				<div class="footer-item">
 					<div class="company-brand">
 						<img src="{{asset('dist/images/main-logo.png')}}" alt="logo" class="footer-logo">
-						<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sagittis sed ptibus liberolectus nonet psryroin. Amet sed lorem posuere sit iaculis amet, ac urna. Adipiscing fames semper erat ac in suspendisse iaculis.</p>
+						<p>{{config('settings.general.site_footer_'.LaravelLocalization::getCurrentLocale())}}</p>
 					</div>
 				</div>
 				
@@ -326,16 +325,13 @@
 							<div class="social-links align-right">
 								<ul>
 									<li>
-										<a href="#"><i class="icon icon-facebook"></i></a>
+										<a href="{{config('settings.social.site_facebook')}}"><i class="icon icon-facebook"></i></a>
 									</li>
 									<li>
-										<a href="#"><i class="icon icon-twitter"></i></a>
+										<a href="{{config('settings.social.site_twitter')}}"><i class="icon icon-twitter"></i></a>
 									</li>
 									<li>
-										<a href="#"><i class="icon icon-youtube-play"></i></a>
-									</li>
-									<li>
-										<a href="#"><i class="icon icon-behance-square"></i></a>
+										<a href="{{config('settings.social.site_youtube')}}"><i class="icon icon-youtube-play"></i></a>
 									</li>
 								</ul>
 							</div>

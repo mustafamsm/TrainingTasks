@@ -61,7 +61,7 @@ public function getAll(){
         $request->validate([
             'title_ar' => 'required|string|max:255',
             'title_en' => 'required|string|max:255',
-            'image' => 'required|exists:temporary_files,folder',
+             
             'status' => 'required|in:0,1|max:255',
             'description_ar' => 'required|string|max:255',
             'description_en' => 'required|string|max:255',
@@ -80,7 +80,8 @@ public function getAll(){
             'end_date' => $request->end_date,
             'image' => '',
         ]);
-        $tempFile = TemporaryFile::where('folder', $request->image)->first();
+        $image=Str::substr($request->image, 0, 24);
+        $tempFile = TemporaryFile::where('folder', $image)->first();
         if($tempFile){
             Image::Image($request, $tempFile, 'silder-images', $silder);
         }
@@ -171,9 +172,9 @@ public function getAll(){
         $silder = Silder::findOrFail($id);
         $old_image = $silder->image;
         $data=$request->except('image');
-       
-        if ($request->has('image')) {
-            $tempFile = TemporaryFile::where('folder', $request->image)->first();
+        $image=Str::substr($request->image, 0, 24);
+        if ($image) {
+            $tempFile = TemporaryFile::where('folder', $image)->first();
             if ($tempFile) {
                 Image::Image($request,$tempFile,'silder-images',$silder);
             }

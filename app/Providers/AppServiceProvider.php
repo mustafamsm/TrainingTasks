@@ -47,7 +47,7 @@ class AppServiceProvider extends ServiceProvider
 
             Config::set(['settings' => $all]);
            
-           
+        //    dd(Config::get('settings'));
         }
     }
 }
